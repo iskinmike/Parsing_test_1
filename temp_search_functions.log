@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <iostream>
+#include <list>
+#include <vector>
+
+#include <class_struct.h>
+#include <search_functions.h>
+
+void searchOPS(oper_type* _OPS) {
+  operators* _b = dynamic_cast<operators*>(_OPS);
+  if (_b) {
+    for (auto i = _b->ops.begin(); i != _b->ops.end(); ++i) {
+      printf("%s -> ", _b->_node_name.c_str());
+      searchOPS(*i);
+    }
+  } else {
+    searchOP(_OPS);
+  }
+};
+
+void searchOP(oper_type* _OP) {
+  operator_class* _b = dynamic_cast<operator_class*>(_OP);
+  printf("%s -> ", _b->_node_name.c_str());
+  searchVariable(_b->variable_pointer);
+  printf("%s\n", "star new search" );
+  std::cout << _b->_node_name.c_str() << std::endl;
+  searchDefinitionBlocks(_b->definition_block_pointer);
+};
+
+void searchVariable(token_type* _variable) {
+  variable* _var_p = dynamic_cast<variable*>(_variable);
+  printf("%s;\n", (_var_p->returnName()).c_str());
+}
+
+void searchDefinitionBlocks(oper_type* _def_blocks) {
+std::cout << "Enter DefBlocks" << std::endl;
+definition_blocks_class* _def_blocks_pointer = NULL;
+try
+	{
+  _def_blocks_pointer =
+  dynamic_cast<definition_blocks_class*>(_def_blocks);
+}
+catch (...) {
+	std::cout << "Something goes wrong !!!!!!!!!!!!!!!!!" << std::endl;
+}
+  std::cout << "inside DefBlocks" << std::endl;
+  //std::cout << _def_blocks_pointer->_node_name.c_str() << std::endl;
+  if (_def_blocks_pointer) {
+    for (auto i = _def_blocks_pointer->_definition_blocks.begin();
+         i != _def_blocks_pointer->_definition_blocks.end(); ++i) {
+    	std::cout << "FOR " <<_def_blocks_pointer->_node_name.c_str() << std::endl;
+      //printf("%s -> ", _def_blocks_pointer->_node_name.c_str());
+      searchDefinitionBlocks(*i);
+    }
+  } else {
+  	std::cout << _def_blocks->_node_name.c_str() << std::endl;
+    searchDefinitionBlockWithEnd(_def_blocks);
+  }
+};
+void searchDefinitionBlockWithEnd(oper_type* _def_blocks) {
+  definition_block_with_end_class* _def_block_with_end_pointer =
+      dynamic_cast<definition_block_with_end_class*>(_def_blocks);
+  if (_def_block_with_end_pointer) {
+    // Нужно вызвать две функции для обработки Кода в скобках и  Определения
+    // блока
+    /// Они оба могут быть нулевыми
+    if (_def_block_with_end_pointer->block_pointer) {
+       printf("%s -> ", _def_block_with_end_pointer->_node_name.c_str());
+      searchDefinitionBlock(_def_block_with_end_pointer->block_pointer);
+    }
+    if (_def_block_with_end_pointer->brace_code_pointer) {
+       printf("%s -> ", _def_block_with_end_pointer->_node_name.c_str());
+      searchBraceCode(_def_block_with_end_pointer->brace_code_pointer);
+    }
+  } else {
+    //
+     printf("%s\n", "SOMETHING WRONG ***************");
+  }
+};
+void searchDefinitionBlock(oper_type* _def_blocks) {
+  ////printf("%s -> ", _def_blocks->_node_name.c_str());
+  definition_block_class* _def_block_pointer =
+      dynamic_cast<definition_block_class*>(_def_blocks);
+  if (_def_block_pointer) {
+     printf("%s -> ", _def_block_pointer->_node_name.c_str());
+    // Просматриваем список и для каждого вызываем эту же функцию
+    for (auto i = _def_block_pointer->_definition_block.begin();
+         i != _def_block_pointer->_definition_block.end(); ++i) {
+       printf("%s %d---> ", (*i)->_node_name.c_str(),
+       _def_block_pointer->_definition_block.size() );
+      searchDefinitionBlock(*i);
+    }
+  } else {
+    //
+    ////printf("%s -> ", _def_blocks->_node_name.c_str());
+    searchToken(_def_blocks);
+  }
+};
+
+void searchBraceCode(token_type* _brace_code) {
+  brace_code* _brace_code_p = dynamic_cast<brace_code*>(_brace_code);
+  if (_brace_code_p) {
+     printf("brace_code%s;\n", (_brace_code_p->returnName()).c_str() );
+  } else {
+  }
+};
+
+void searchToken(oper_type* _def_blocks) {
+  token_class* _token_pointer = dynamic_cast<token_class*>(_def_blocks);
+  if (_token_pointer) {
+     printf("%s -> ", _token_pointer->_node_name.c_str());
+    searchSymbol(_token_pointer->_token);
+  } else {
+     printf("%s\n", "SOMETHING GOES WRONG !!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  }
+};
+
+void searchSymbol(token_type* _token) {
+  symbol* _token_pointer = dynamic_cast<symbol*>(_token);
+  if (_token_pointer) {
+     printf("%s;\n", (_token_pointer->returnName()).c_str() );
+  } else {
+    //
+    searchVariable(_token);
+  }
+};

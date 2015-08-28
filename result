@@ -1,0 +1,341 @@
+Terminals unused in grammar
+
+   PERCENT_OPEN_BRACE
+   PERCENT_CLOSE_BRACE
+
+
+Grammar
+
+    0 $accept: PROGRAM $end
+
+    1 PROGRAM: TOKEN_SECTION_EMPTY_OR_NOT DOUBLE_PERCENT OPS
+
+    2 TOKEN_SECTION_EMPTY_OR_NOT: %empty
+    3                           | TOKEN_LINES
+
+    4 TOKEN_LINES: TOKEN_LINE
+    5            | TOKEN_LINES TOKEN_LINE
+
+    6 TOKEN_LINE: TOKEN_LINE_START RETURNED_TOKENS
+
+    7 RETURNED_TOKENS: RETURNED_TOKEN
+    8                | RETURNED_TOKENS RETURNED_TOKEN
+
+    9 OPS: OP
+   10    | OPS OP
+
+   11 OP: VARIABLE ':' DEFINITION_BLOCKS ';'
+
+   12 DEFINITION_BLOCKS: DEFINITION_BLOCK_WITH_END
+   13                  | DEFINITION_BLOCKS '|' DEFINITION_BLOCK_WITH_END
+
+   14 DEFINITION_BLOCK_WITH_END: %empty
+   15                          | DEFINITION_BLOCK
+   16                          | DEFINITION_BLOCK BRACE_CODE_TOKEN
+   17                          | BRACE_CODE_TOKEN
+
+   18 DEFINITION_BLOCK: TOKEN
+   19                 | DEFINITION_BLOCK TOKEN
+
+   20 TOKEN: VARIABLE
+   21      | SYMBOL
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+':' (58) 11
+';' (59) 11
+'|' (124) 13
+error (256)
+VARIABLE (258) 11 20
+SYMBOL (259) 21
+BRACE_CODE_TOKEN (260) 16 17
+RETURNED_TOKEN (261) 7 8
+DOUBLE_PERCENT (262) 1
+PERCENT_OPEN_BRACE (263)
+PERCENT_CLOSE_BRACE (264)
+TOKEN_LINE_START (265) 6
+
+
+Nonterminals, with rules where they appear
+
+$accept (14)
+    on left: 0
+PROGRAM (15)
+    on left: 1, on right: 0
+TOKEN_SECTION_EMPTY_OR_NOT (16)
+    on left: 2 3, on right: 1
+TOKEN_LINES (17)
+    on left: 4 5, on right: 3 5
+TOKEN_LINE (18)
+    on left: 6, on right: 4 5
+RETURNED_TOKENS (19)
+    on left: 7 8, on right: 6 8
+OPS (20)
+    on left: 9 10, on right: 1 10
+OP (21)
+    on left: 11, on right: 9 10
+DEFINITION_BLOCKS (22)
+    on left: 12 13, on right: 11 13
+DEFINITION_BLOCK_WITH_END (23)
+    on left: 14 15 16 17, on right: 12 13
+DEFINITION_BLOCK (24)
+    on left: 18 19, on right: 15 16 19
+TOKEN (25)
+    on left: 20 21, on right: 18 19
+
+
+State 0
+
+    0 $accept: . PROGRAM $end
+
+    TOKEN_LINE_START  shift, and go to state 1
+
+    $default  reduce using rule 2 (TOKEN_SECTION_EMPTY_OR_NOT)
+
+    PROGRAM                     go to state 2
+    TOKEN_SECTION_EMPTY_OR_NOT  go to state 3
+    TOKEN_LINES                 go to state 4
+    TOKEN_LINE                  go to state 5
+
+
+State 1
+
+    6 TOKEN_LINE: TOKEN_LINE_START . RETURNED_TOKENS
+
+    RETURNED_TOKEN  shift, and go to state 6
+
+    RETURNED_TOKENS  go to state 7
+
+
+State 2
+
+    0 $accept: PROGRAM . $end
+
+    $end  shift, and go to state 8
+
+
+State 3
+
+    1 PROGRAM: TOKEN_SECTION_EMPTY_OR_NOT . DOUBLE_PERCENT OPS
+
+    DOUBLE_PERCENT  shift, and go to state 9
+
+
+State 4
+
+    3 TOKEN_SECTION_EMPTY_OR_NOT: TOKEN_LINES .
+    5 TOKEN_LINES: TOKEN_LINES . TOKEN_LINE
+
+    TOKEN_LINE_START  shift, and go to state 1
+
+    $default  reduce using rule 3 (TOKEN_SECTION_EMPTY_OR_NOT)
+
+    TOKEN_LINE  go to state 10
+
+
+State 5
+
+    4 TOKEN_LINES: TOKEN_LINE .
+
+    $default  reduce using rule 4 (TOKEN_LINES)
+
+
+State 6
+
+    7 RETURNED_TOKENS: RETURNED_TOKEN .
+
+    $default  reduce using rule 7 (RETURNED_TOKENS)
+
+
+State 7
+
+    6 TOKEN_LINE: TOKEN_LINE_START RETURNED_TOKENS .
+    8 RETURNED_TOKENS: RETURNED_TOKENS . RETURNED_TOKEN
+
+    RETURNED_TOKEN  shift, and go to state 11
+
+    $default  reduce using rule 6 (TOKEN_LINE)
+
+
+State 8
+
+    0 $accept: PROGRAM $end .
+
+    $default  accept
+
+
+State 9
+
+    1 PROGRAM: TOKEN_SECTION_EMPTY_OR_NOT DOUBLE_PERCENT . OPS
+
+    VARIABLE  shift, and go to state 12
+
+    OPS  go to state 13
+    OP   go to state 14
+
+
+State 10
+
+    5 TOKEN_LINES: TOKEN_LINES TOKEN_LINE .
+
+    $default  reduce using rule 5 (TOKEN_LINES)
+
+
+State 11
+
+    8 RETURNED_TOKENS: RETURNED_TOKENS RETURNED_TOKEN .
+
+    $default  reduce using rule 8 (RETURNED_TOKENS)
+
+
+State 12
+
+   11 OP: VARIABLE . ':' DEFINITION_BLOCKS ';'
+
+    ':'  shift, and go to state 15
+
+
+State 13
+
+    1 PROGRAM: TOKEN_SECTION_EMPTY_OR_NOT DOUBLE_PERCENT OPS .
+   10 OPS: OPS . OP
+
+    VARIABLE  shift, and go to state 12
+
+    $default  reduce using rule 1 (PROGRAM)
+
+    OP  go to state 16
+
+
+State 14
+
+    9 OPS: OP .
+
+    $default  reduce using rule 9 (OPS)
+
+
+State 15
+
+   11 OP: VARIABLE ':' . DEFINITION_BLOCKS ';'
+
+    VARIABLE          shift, and go to state 17
+    SYMBOL            shift, and go to state 18
+    BRACE_CODE_TOKEN  shift, and go to state 19
+
+    $default  reduce using rule 14 (DEFINITION_BLOCK_WITH_END)
+
+    DEFINITION_BLOCKS          go to state 20
+    DEFINITION_BLOCK_WITH_END  go to state 21
+    DEFINITION_BLOCK           go to state 22
+    TOKEN                      go to state 23
+
+
+State 16
+
+   10 OPS: OPS OP .
+
+    $default  reduce using rule 10 (OPS)
+
+
+State 17
+
+   20 TOKEN: VARIABLE .
+
+    $default  reduce using rule 20 (TOKEN)
+
+
+State 18
+
+   21 TOKEN: SYMBOL .
+
+    $default  reduce using rule 21 (TOKEN)
+
+
+State 19
+
+   17 DEFINITION_BLOCK_WITH_END: BRACE_CODE_TOKEN .
+
+    $default  reduce using rule 17 (DEFINITION_BLOCK_WITH_END)
+
+
+State 20
+
+   11 OP: VARIABLE ':' DEFINITION_BLOCKS . ';'
+   13 DEFINITION_BLOCKS: DEFINITION_BLOCKS . '|' DEFINITION_BLOCK_WITH_END
+
+    ';'  shift, and go to state 24
+    '|'  shift, and go to state 25
+
+
+State 21
+
+   12 DEFINITION_BLOCKS: DEFINITION_BLOCK_WITH_END .
+
+    $default  reduce using rule 12 (DEFINITION_BLOCKS)
+
+
+State 22
+
+   15 DEFINITION_BLOCK_WITH_END: DEFINITION_BLOCK .
+   16                          | DEFINITION_BLOCK . BRACE_CODE_TOKEN
+   19 DEFINITION_BLOCK: DEFINITION_BLOCK . TOKEN
+
+    VARIABLE          shift, and go to state 17
+    SYMBOL            shift, and go to state 18
+    BRACE_CODE_TOKEN  shift, and go to state 26
+
+    $default  reduce using rule 15 (DEFINITION_BLOCK_WITH_END)
+
+    TOKEN  go to state 27
+
+
+State 23
+
+   18 DEFINITION_BLOCK: TOKEN .
+
+    $default  reduce using rule 18 (DEFINITION_BLOCK)
+
+
+State 24
+
+   11 OP: VARIABLE ':' DEFINITION_BLOCKS ';' .
+
+    $default  reduce using rule 11 (OP)
+
+
+State 25
+
+   13 DEFINITION_BLOCKS: DEFINITION_BLOCKS '|' . DEFINITION_BLOCK_WITH_END
+
+    VARIABLE          shift, and go to state 17
+    SYMBOL            shift, and go to state 18
+    BRACE_CODE_TOKEN  shift, and go to state 19
+
+    $default  reduce using rule 14 (DEFINITION_BLOCK_WITH_END)
+
+    DEFINITION_BLOCK_WITH_END  go to state 28
+    DEFINITION_BLOCK           go to state 22
+    TOKEN                      go to state 23
+
+
+State 26
+
+   16 DEFINITION_BLOCK_WITH_END: DEFINITION_BLOCK BRACE_CODE_TOKEN .
+
+    $default  reduce using rule 16 (DEFINITION_BLOCK_WITH_END)
+
+
+State 27
+
+   19 DEFINITION_BLOCK: DEFINITION_BLOCK TOKEN .
+
+    $default  reduce using rule 19 (DEFINITION_BLOCK)
+
+
+State 28
+
+   13 DEFINITION_BLOCKS: DEFINITION_BLOCKS '|' DEFINITION_BLOCK_WITH_END .
+
+    $default  reduce using rule 13 (DEFINITION_BLOCKS)

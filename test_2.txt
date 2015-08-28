@@ -1,0 +1,28 @@
+%{
+	#include <string>
+	#include <vector>
+   #define YYSTYPE std::string
+   #include "code_parser.tab.h"
+   void yyerror(char *s);
+   std::vector<std::string> massive_of_tokens;
+%}
+
+%token MAN WOMAN
+%locate
+
+%token UID_KEYWORD
+%token INCLUDE_KEYWORD INCLUDE_KEYWORD_RCML INCLUDE_KEYWORD_RCML_LIB
+
+%type<str> ID STRING UID DEFINE
+
+%%
+
+OPS: OP1 '=' OP2 /*
+ssdfsdfsgs
+*/ | OPS_1 OP3  { echo("251")} 
+   | MAN WOMAN{}
+   | UP DOWN '!' TEST {}
+;
+%%
+
+

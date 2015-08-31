@@ -50,8 +50,9 @@ class brace_code : public token_type
 class operators : public oper_type{
         //void append(oper_type* op);
         public:
-        	 int _node_number;
+        	int _node_number;
         	color_t _color;
+        	
         	//std::string _node_name;
         	std::list<oper_type*> ops;
         	oper_type* pointer_to_OP;

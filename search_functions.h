@@ -13,3 +13,7 @@ void searchDefinitionBlockWithEnd(oper_type* _def_block_w_end);
 void searchDefinitionBlock(oper_type* _def_block);
 
 void searchToken(oper_type* _token_block);
+
+void searchSameVariables(oper_type* start_OP);
+
+void setGlobalOperator(oper_type* _oper);

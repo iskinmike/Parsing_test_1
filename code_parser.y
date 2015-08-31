@@ -45,6 +45,7 @@
 
 PROGRAM: TOKEN_SECTION_EMPTY_OR_NOT DOUBLE_PERCENT OPS  {
 															printf("%s\n","digraph G {\nsize =\"40,40\";");
+															setGlobalOperator($3);
 															searchOPS($3);
 															printf("%s","}");
 														}
@@ -65,7 +66,7 @@ RETURNED_TOKENS:  RETURNED_TOKEN                  { massive_of_tokens.push_back(
 				| RETURNED_TOKENS RETURNED_TOKEN  { massive_of_tokens.push_back($2); }
 ;
 
-OPS:  OP 	 { $$ = new operators($1,"OPS");    }; // Наследуется от ОР $$ = new operators($1);
+OPS:  OP 	 { $$ = new operators($1,"OPS");    } // Наследуется от ОР $$ = new operators($1);
 	| OPS OP { $$ = new operators($1,$2,"OPS"); }
 ;
 
@@ -74,7 +75,7 @@ OP:  VARIABLE ':' DEFINITION_BLOCKS ';' {
 										}
 ;
 
-DEFINITION_BLOCKS:    DEFINITION_BLOCK_WITH_END                       { $$ = new definition_blocks_class($1,"DEFINITION_BLOCKS");    }; 
+DEFINITION_BLOCKS:    DEFINITION_BLOCK_WITH_END                       { $$ = new definition_blocks_class($1,"DEFINITION_BLOCKS");    } 
 					| DEFINITION_BLOCKS '|' DEFINITION_BLOCK_WITH_END { $$ = new definition_blocks_class($1,$3,"DEFINITION_BLOCKS"); }
 ;
 
@@ -103,7 +104,7 @@ DEFINITION_BLOCK_WITH_END:                                      { $$ = new defin
 
 DEFINITION_BLOCK:	  TOKEN                   { 
 												$$ = new definition_block_class($1,"DEFINITION_BLOCK"); 
-												}; // Наследуется от { $$ = new definition_block_class($1); }
+												} // Наследуется от { $$ = new definition_block_class($1); }
 					| DEFINITION_BLOCK TOKEN  { $$ = new definition_block_class($1,$2,"DEFINITION_BLOCK");  }
 ;
 

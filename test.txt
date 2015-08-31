@@ -17,14 +17,6 @@
 
 %%
 
-OPS: OP1 '=' OP2 /*
-ssdfsdfsgs
-*/ | OPS_1 OP3  { echo("251")} 
-   | MAN WOMAN{}
-   | UP DOWN '!' TEST {}
-;
-
-
 PROGRAM: UID INCLUDES DEFINES FUNCTIONS
 ;
 

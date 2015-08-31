@@ -16,13 +16,22 @@
 %type<str> ID STRING UID DEFINE
 
 %%
-
-OPS: OP1 '=' OP2 /*
+/*
+OPS: OP1 '=' OP2 
 ssdfsdfsgs
-*/ | OPS_1 OP3  { echo("251")} 
+   | OPS_1 OP3  { echo("251")} 
    | MAN WOMAN{}
    | UP DOWN '!' TEST {}
 ;
+*/
+Var_1 : nothing | something | one two three;
+
+Var_2 : | Man Woman | '!' other_thing ;
+
+Var_3 : Step_1 Step_2 | return_to_step_1 ;
+
+Var_4 : bird | hamster | deer | dog | cat | wolf | goat | butterfly | dragonfly | dragon | ogre | dwarf | orc | goblin;
+
 %%
 
 

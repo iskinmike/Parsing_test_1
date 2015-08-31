@@ -826,7 +826,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 21 "code_parser.l"
-{printf("begin_definition_section\n"); BEGIN(DEFINITION_SECTION_BRACE_CODE);  }
+{ BEGIN(DEFINITION_SECTION_BRACE_CODE);  }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -842,12 +842,12 @@ YY_RULE_SETUP
 case 4:
 YY_RULE_SETUP
 #line 24 "code_parser.l"
-{BEGIN(INITIAL); printf("%s\n", "end_define_section" );}
+{BEGIN(INITIAL); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 26 "code_parser.l"
-{ BEGIN(TOKEN_ARGUMENTS); printf("%s\n","begin_token_section" ); return TOKEN_LINE_START;}
+{ BEGIN(TOKEN_ARGUMENTS); ; return TOKEN_LINE_START;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
@@ -863,13 +863,13 @@ case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
 #line 29 "code_parser.l"
-{ BEGIN(INITIAL); printf("%s\n", "end_token_section" ); }
+{ BEGIN(INITIAL);  }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 31 "code_parser.l"
 {
-	printf ("%s\n","%%"); 
+	
 	percent_count++;
 	if (percent_count>1) {
 		yyterminate();
@@ -881,13 +881,13 @@ case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
 #line 40 "code_parser.l"
-{printf("%s\n","Erase");} // whitespace
+{;} // whitespace
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
 #line 41 "code_parser.l"
-{printf("%s\n","Erase");} // whitespace
+{;} // whitespace
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
@@ -903,7 +903,7 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 45 "code_parser.l"
-{  BEGIN(INITIAL); printf("comment_construct_1\n");}
+{  BEGIN(INITIAL); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
@@ -919,7 +919,7 @@ YY_RULE_SETUP
 case 17:
 YY_RULE_SETUP
 #line 49 "code_parser.l"
-{  BEGIN(INITIAL); printf("brace_code\n"); return BRACE_CODE_TOKEN; }
+{  BEGIN(INITIAL);  return BRACE_CODE_TOKEN; }
 	YY_BREAK
 case 18:
 /* rule 18 can match eol */
@@ -955,7 +955,7 @@ YY_RULE_SETUP
 case 22:
 YY_RULE_SETUP
 #line 67 "code_parser.l"
-{  printf("%s\n", ";:|" ); ;return *yytext; }
+{ return *yytext; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP

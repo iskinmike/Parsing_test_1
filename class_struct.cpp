@@ -13,6 +13,9 @@ int _definition_blocks_class_number = 0;
 int _definition_block_with_end_class_number = 0;
 int _definition_block_class_number = 0;
 int _token_class_number = 0;
+int _symbol_number = 0;
+int _variable_number = 0;
+int _brace_code_number = 0;
 
 std::string returnNewName(std::string str, int number) {
   char buf[10];
@@ -24,14 +27,34 @@ std::string returnNewName(std::string str, int number) {
 
 /// variable VARIBLE
 std::string variable::returnName() { return _token_name; };
-variable::variable(std::string assigned_name) : _token_name(assigned_name){};
+variable::variable(std::string assigned_name) {
+	_token_name.assign(returnNewName("variable",_variable_number));
+	std::string temp_str(_token_name);
+	_token_name.append("; \n");
+	_token_name.append(temp_str);
+	_token_name.append(" [label=\"");
+	_token_name.append(assigned_name);
+	_token_name.append("\"]");
+	_variable_number++;
+};
 ///
 std::string symbol::returnName() { return _token_name; };
-symbol::symbol(std::string assigned_name) : _token_name(assigned_name){};
+symbol::symbol(std::string assigned_name){
+	_token_name.assign(returnNewName("symbol",_symbol_number));
+	std::string temp_str(_token_name);
+	_token_name.append("; \n");
+	_token_name.append(temp_str);
+	_token_name.append(" [label=\"");
+	_token_name.append(assigned_name);
+	_token_name.append("\"]");
+	_symbol_number++;
+};
 ///
 std::string brace_code::returnName() { return _token_name; };
-brace_code::brace_code(std::string assigned_name)
-    : _token_name(assigned_name){};
+brace_code::brace_code(std::string assigned_name){
+	_token_name.assign(returnNewName("brace_code",_brace_code_number));
+	_brace_code_number++;
+};
 
 /*
 	/// MACROS

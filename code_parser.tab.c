@@ -80,305 +80,6 @@
 
     std::vector<std::string> massive_of_tokens;
 
-/*
-    class oper_type { // abstract
-        protected: oper_type() {}
-        public: virtual ~oper_type() {}
-    };
-
-    class token_type{
-    	protected: token_type() {}
-        public: virtual ~token_type() {}
-    };
-
-	/// Объект класса operators будет иметь список ссылок на другие объекты operators,
-	/// либо на 1 оператор или и на то и на другое, либо не иметь ссылок, но этого не должно быть.
-    /// У нашей грамматики OPS и OP нужно чтобы имели тип oper_type
-    /// Это для описания правила    OPS: OP | OPS OP;
-    class operators : public oper_type{
-    	std::list<oper_type*> ops;
-        void append(oper_type* op) {
-            operators* b = dynamic_cast<operators*>(op);
-            if(b) {
-                ops.splice(ops.end(), b->ops, b->ops.begin(), b->ops.end());
-                delete b;
-            }
-            else ops.push_back(op);
-        }
-        public:
-            operators() {}
-            operators(oper_type* op) { append(op); }
-            operators(oper_type* op1, oper_type* op2) { append(op1); append(op2); }
-    };
-
-    /// Затем нам нужен класс который опишет, если идем по-порядку, переменную VARIABLE
-    /// Возможно надо бы для него абстрактный класс создать чтобы его типом объявить,
-    /// но может и не надо - у него не будет ссылок на другие переменные
-    class variable : public token_type
-    {
-    	/// Просто сделал свойство чтобы было, не факт что потребуется, 
-    	/// пока нужен просто класс на который будут ссылаться
-    	std::string _token_name;
-    	//assignName(std::string assigned_name){ this->_name ;};
-    	std::string returnName(){ return _token_name; };
-    public:
-    	variable(std::string assigned_name): _token_name(assigned_name) {};
-    	//~variable();
-    };
-    class symbol : public token_type
-    {
-    	/// Просто сделал свойство чтобы было, не факт что потребуется, 
-    	/// пока нужен просто класс на который будут ссылаться
-    	std::string _token_name;
-    	//assignName(std::string assigned_name){ this->_name ;};
-    	std::string returnName(){ return _token_name; };
-    public:
-    	symbol(std::string assigned_name): _token_name(assigned_name){};
-    	//~symbol();	
-    };
-    class brace_code : public token_type
-    {
-    	/// Просто сделал свойство чтобы было, не факт что потребуется, 
-    	/// пока нужен просто класс на который будут ссылаться
-    	std::string _token_name;
-    	//assignName(std::string assigned_name){ this->_name ;};
-    	std::string returnName(){ return _token_name; };
-    public:
-    	brace_code(std::string assigned_name): _token_name(assigned_name){};
-    	//~brace_code();	
-    };
-
-
-    /// Теперь просто идем по порядку Карты. 
-    /// На каждую строку после переменной у нас будет свой класс
-    /// И каждый раз будет создаваться его экземпляр. Это и будет узел нашего дерева.
-
-    /// OP:  VARIABLE ':' DEFINITION_BLOCKS ';';
-    class operator_class : public oper_type
-    {
-    	/// Должны быть ссылки на variable и definition_block
-    	oper_type* definition_block_pointer;
-    	token_type* variable_pointer;
-    	/// И как-то надо отразить правило создания - ':' и ';' пока не знаю как
-    public:
-    	operator_class(token_type* variable, oper_type* definition_block): definition_block_pointer(definition_block), variable_pointer(variable) {};
-    	//~operator_class();
-    };
-
-
-    /// Вообще все по-другому надо сделать
-    /// У нас есть узел такой:
-    /// DEFINITION_BLOCKS:    DEFINITION_BLOCK_WITH_END
-	/// 					| DEFINITION_BLOCKS '|' DEFINITION_BLOCK_WITH_END   ;
-	/// Сделаем по аналогии с OPS: OP | OPS OP;
-    class definition_blocks_class : public oper_type
-    {
-    	/// У него должы быть ссылки на (в виде списка на себя и на другой элемент definition_block_with_end)
-    	std::list<oper_type*> _definition_blocks;
-    	/// Надо описать метод который при содании будет заполнять этот список ссылками:
-    	void append(oper_type* args) {
-            definition_blocks_class* b = dynamic_cast<definition_blocks_class*>(args);
-            if(b) {
-                _definition_blocks.splice(_definition_blocks.end(), b->_definition_blocks, b->_definition_blocks.begin(), b->_definition_blocks.end());
-                delete b;
-            }
-            else _definition_blocks.push_back(args);
-        }
-    public:
-    	definition_blocks_class() {}
-        definition_blocks_class(oper_type* op) { append(op); }
-        definition_blocks_class(oper_type* op1, oper_type* op2) { append(op1); append(op2); }	
-    };
-
-    /// Теперь рассматриваем следующий узел:
-    /// DEFINITION_BLOCK_WITH_END:    %empty
-	///								| DEFINITION_BLOCK
-	///								| DEFINITION_BLOCK BRACE_CODE_TOKEN
-	///								| BRACE_CODE_TOKEN
-	///	;
-    /// Видимо в нашем в случае oper_type это все же тип узла а не тип оператора, но мы можем конкретизировать.
-	class definition_block_with_end_class : public oper_type
-	{
-		/// Здесь должны быть ссылки на
-		///| %empty 
-		///| DEFINITION_BLOCK
-		///| DEFINITION_BLOCK BRACE_CODE_TOKEN
-		///| BRACE_CODE_TOKEN
-		/// Это все 1-й ссылкой
-		oper_type* block_pointer; // Ссылается на все перечисленные, кроме наверное brace_code_token
-		token_type* brace_code_pointer; // песть отдельно ссылается на код
-	public:
-		definition_block_with_end_class(oper_type* block, token_type* brace_code): brace_code_pointer(brace_code), block_pointer(block) {};
-	};
-
-	/// DEFINITION_BLOCK:	  TOKEN
-	///						| DEFINITION_BLOCK TOKEN
-	/// ;
-	/// Пропишем класс опять таки по аналогии с OPS: OP | OPS OP;  
-	/// Он ссылается на TOKEN и на себя.
-	/// 
-	/// 
-	class definition_block_class : public oper_type
-	{
-		std::list<oper_type*> _definition_block;
-		void append(oper_type* args) {
-            definition_block_class* b = dynamic_cast<definition_block_class*>(args);
-            if(b) {
-                _definition_block.splice(_definition_block.end(), b->_definition_block, b->_definition_block.begin(), b->_definition_block.end());
-                delete b;
-            }
-            else _definition_block.push_back(args);
-        }
-	public:
-		definition_block_class() {}
-        definition_block_class(oper_type* op) { append(op); }
-        definition_block_class(oper_type* op1, oper_type* op2) { append(op1); append(op2); }	
-	};
-
-
-	/// Теперь рассмотрим узел TOKEN
-	/// TOKEN:    VARIABLE 
-	///			| SYMBOL 
-	/// Он ссылается только на токены либо на 1 либо на другой
-	class token_class : public oper_type 
-	{
-		token_type* _token;
-		/// В конструкторе надо сделать присваивание
-	public:
-		token_class(token_type* arg):  _token(arg) {};
-	};
-
-	/// Получается ему будем присваивать 
-*/
-	///   	oper_type* definition_block_pointer;
-    ///	    token_type* variable_pointer;
-/*
-	/// У нас узлы не одинаковые, поэтому для каждого типа узла сделаем свою функцию.
-	void searchOP(oper_type* _OP);
-	void searchOPS(oper_type* _OPS);
-	/// Их можно как одну использовать разницы нет, а хотя нет, есть. пока оставим так чтобы каждая была отдельно
-	void searchVariable(token_type* _variable);
-	void searchSymbol(token_type* _symbol);
-	void searchBraceCode(token_type* _brace_code);
-
-	void searchDefinitionBlocks(oper_type* _def_blocks);
-	void searchDefinitionBlockWithEnd(oper_type* _def_blocks);
-	void searchDefinitionBlock(oper_type* _def_blocks);
-
-	void searchToken(oper_type* _def_blocks);
-
-
-
-	void searchOPS(oper_type* _OPS){
-		operators* _b = dynamic_cast<operators*>(_OPS);
-		if (_b) {
-			for (auto i=_b->ops.begin(); i!=_b->ops.end(); ++i ){	
-				printf("%s -> ", _b->_node_name.c_str());
-				searchOP(*i);
-			}
-		}
-		else {
-			searchOP(_OPS);
-		}
-	};
-
-	void searchOP(oper_type* _OP){
-		operator_class* _b = dynamic_cast<operator_class*>(_OP);
-		printf("%s -> ", _b->_node_name.c_str());
-		searchVariable(_b->variable_pointer);
-		printf("%s -> ", _b->_node_name.c_str());
-		searchDefinitionBlocks(_b->definition_block_pointer);
-	};
-
-	void searchVariable(token_type* _variable){	
-		variable* _var_p = dynamic_cast<variable*>(_variable);	
-		printf("%s;\n", (_var_p->returnName()).c_str());			
-	}
-
-	void searchDefinitionBlocks(oper_type* _def_blocks){
-		definition_blocks_class* _def_blocks_pointer = dynamic_cast<definition_blocks_class*>(_def_blocks);
-		if (_def_blocks_pointer){
-			for (auto i=_def_blocks_pointer->_definition_blocks.begin(); i!=_def_blocks_pointer->_definition_blocks.end(); ++i ){
-				//printf("%s -> ", _def_blocks_pointer->_node_name.c_str());
-				searchDefinitionBlocks(*i);
-			} 
-		}
-		else 
-		{
-			searchDefinitionBlockWithEnd(_def_blocks);
-		}
-	};
-	void searchDefinitionBlockWithEnd(oper_type* _def_blocks){		
-		definition_block_with_end_class* _def_block_with_end_pointer = dynamic_cast<definition_block_with_end_class*>(_def_blocks);
-		if (_def_block_with_end_pointer) {
-			// Нужно вызвать две функции для обработки Кода в скобках и  Определения блока
-			/// Они оба могут быть нулевыми
-			if (_def_block_with_end_pointer->block_pointer) {
-				//printf("%s -> ", _def_block_with_end_pointer->_node_name.c_str());
-				searchDefinitionBlock(_def_block_with_end_pointer->block_pointer);
-			}		
-			if (_def_block_with_end_pointer->brace_code_pointer) {
-				//printf("%s -> ", _def_block_with_end_pointer->_node_name.c_str());
-				searchBraceCode(_def_block_with_end_pointer->brace_code_pointer);				
-			}
-		}
-		else {
-			//
-			//printf("%s\n", "SOMETHING WRONG ***************");
-		}
-	};
-	void searchDefinitionBlock(oper_type* _def_blocks){
-		//printf("%s -> ", _def_blocks->_node_name.c_str());
-		definition_block_class* _def_block_pointer = dynamic_cast<definition_block_class*>(_def_blocks);
-		if (_def_block_pointer) {
-			//printf("%s -> ", _def_block_pointer->_node_name.c_str());
-			// Просматриваем список и для каждого вызываем эту же функцию
-			for (auto i=_def_block_pointer->_definition_block.begin(); i!=_def_block_pointer->_definition_block.end(); ++i ){
-				//printf("%s %d---> ", (*i)->_node_name.c_str(), _def_block_pointer->_definition_block.size() );
-				searchDefinitionBlock(*i);
-			} 
-		}
-		else {
-			//	
-			////printf("%s -> ", _def_blocks->_node_name.c_str());
-			searchToken(_def_blocks);			
-		}
-	};
-
-	void searchBraceCode(token_type* _brace_code){		
-		brace_code* _brace_code_p = dynamic_cast<brace_code*>(_brace_code);
-		if (_brace_code_p) {
-			//printf("brace_code%s;\n", (_brace_code_p->returnName()).c_str() );
-		}
-		else {	
-		}
-	};
-
-	void searchToken(oper_type* _def_blocks){
-		token_class* _token_pointer = dynamic_cast<token_class*>(_def_blocks);
-		if (_token_pointer){
-			//printf("%s -> ", _token_pointer->_node_name.c_str());
-			searchSymbol(_token_pointer->_token);
-		}
-		else {
-			//printf("%s\n", "SOMETHING GOES WRONG !!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		}
-		
-	};
-
-	void searchSymbol(token_type* _token){
-		symbol* _token_pointer = dynamic_cast<symbol*>(_token);
-		if (_token_pointer) {
-			//printf("%s;\n", (_token_pointer->returnName()).c_str() );
-		}
-		else {
-			//
-			searchVariable(_token);			
-		}
-
-	};
-
-*/
 	typedef struct {
         std::string str;
         oper_type* node_t;
@@ -388,7 +89,7 @@
 
     //#define YYPRINT(file, type, value) printf("%d", value);
 
-#line 392 "code_parser.tab.c" /* yacc.c:339  */
+#line 93 "code_parser.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -445,7 +146,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 449 "code_parser.tab.c" /* yacc.c:358  */
+#line 150 "code_parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -741,11 +442,11 @@ static const yytype_uint8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint16 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,   345,   345,   361,   362,   365,   366,   369,   372,   373,
-     376,   377,   380,   385,   386,   389,   394,   399,   404,   412,
-     413,   416,   420
+       0,    46,    46,    53,    54,    57,    58,    61,    64,    65,
+      68,    69,    72,    77,    78,    81,    86,    91,    96,   104,
+     107,   110,   114
 };
 #endif
 
@@ -1530,141 +1231,134 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 345 "code_parser.y" /* yacc.c:1646  */
+#line 46 "code_parser.y" /* yacc.c:1646  */
     {
-															for (
-																	auto i = massive_of_tokens.begin(); 
-																	i != massive_of_tokens.end();
-																	++i
-																)
-															{
-																printf("%s\n", i->c_str() );
-															}
-															;
-															// Попробуем здесь написать алгоритм обхода нашего дерева $3 - первая вершина.
-															printf("%s\n","let's try to search little tree structure");
+															printf("%s\n","digraph G {\nsize =\"40,40\";");
 															searchOPS((yyvsp[0].node_t));
+															printf("%s","}");
 														}
-#line 1549 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1241 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 372 "code_parser.y" /* yacc.c:1646  */
+#line 64 "code_parser.y" /* yacc.c:1646  */
     { massive_of_tokens.push_back((yyvsp[0].str)); }
-#line 1555 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1247 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 373 "code_parser.y" /* yacc.c:1646  */
+#line 65 "code_parser.y" /* yacc.c:1646  */
     { massive_of_tokens.push_back((yyvsp[0].str)); }
-#line 1561 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1253 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 376 "code_parser.y" /* yacc.c:1646  */
+#line 68 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new operators((yyvsp[0].node_t),"OPS");    }
-#line 1567 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1259 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 377 "code_parser.y" /* yacc.c:1646  */
+#line 69 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new operators((yyvsp[-1].node_t),(yyvsp[0].node_t),"OPS"); }
-#line 1573 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1265 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 380 "code_parser.y" /* yacc.c:1646  */
+#line 72 "code_parser.y" /* yacc.c:1646  */
     { 
 											(yyval.node_t) = new operator_class(new variable((yyvsp[-3].str)), (yyvsp[-1].node_t),"OP");
 										}
-#line 1581 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1273 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 385 "code_parser.y" /* yacc.c:1646  */
+#line 77 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new definition_blocks_class((yyvsp[0].node_t),"DEFINITION_BLOCKS");    }
-#line 1587 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1279 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 386 "code_parser.y" /* yacc.c:1646  */
+#line 78 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new definition_blocks_class((yyvsp[-2].node_t),(yyvsp[0].node_t),"DEFINITION_BLOCKS"); }
-#line 1593 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1285 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 389 "code_parser.y" /* yacc.c:1646  */
+#line 81 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new definition_block_with_end_class( NULL,
 																											NULL,
 																											"DEFINITION_BLOCK_WITH_END"
 																											);
 																}
-#line 1603 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1295 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 394 "code_parser.y" /* yacc.c:1646  */
+#line 86 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new definition_block_with_end_class( (yyvsp[0].node_t),
 																											NULL,
 																											"DEFINITION_BLOCK_WITH_END"
 																											);
 																}
-#line 1613 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1305 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 399 "code_parser.y" /* yacc.c:1646  */
+#line 91 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new definition_block_with_end_class( (yyvsp[-1].node_t),
 																											new brace_code((yyvsp[0].str)),
 																											"DEFINITION_BLOCK_WITH_END"
 																											); 
 																}
-#line 1623 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1315 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 404 "code_parser.y" /* yacc.c:1646  */
+#line 96 "code_parser.y" /* yacc.c:1646  */
     { 
 																	(yyval.node_t) = new definition_block_with_end_class( NULL,
 																											  new brace_code((yyvsp[0].str)),
 																											  "DEFINITION_BLOCK_WITH_END"
 																											  );
 																}
-#line 1634 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1326 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 412 "code_parser.y" /* yacc.c:1646  */
-    { (yyval.node_t) = new definition_block_class((yyvsp[0].node_t),"DEFINITION_BLOCK"); }
-#line 1640 "code_parser.tab.c" /* yacc.c:1646  */
+#line 104 "code_parser.y" /* yacc.c:1646  */
+    { 
+												(yyval.node_t) = new definition_block_class((yyvsp[0].node_t),"DEFINITION_BLOCK"); 
+												}
+#line 1334 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 413 "code_parser.y" /* yacc.c:1646  */
+#line 107 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new definition_block_class((yyvsp[-1].node_t),(yyvsp[0].node_t),"DEFINITION_BLOCK");  }
-#line 1646 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1340 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 416 "code_parser.y" /* yacc.c:1646  */
+#line 110 "code_parser.y" /* yacc.c:1646  */
     { 
 						//printf("Var %s\n", $1.c_str()); 
 						(yyval.node_t) = new token_class(new variable((yyvsp[0].str)), "TOKEN");
 					}
-#line 1655 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1349 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 420 "code_parser.y" /* yacc.c:1646  */
+#line 114 "code_parser.y" /* yacc.c:1646  */
     { 
 						//printf("Sym %s\n", $1.c_str());
 						(yyval.node_t) = new token_class(new symbol((yyvsp[0].str)), "TOKEN");
 					}
-#line 1664 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1358 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1668 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1362 "code_parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1892,11 +1586,10 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 425 "code_parser.y" /* yacc.c:1906  */
+#line 119 "code_parser.y" /* yacc.c:1906  */
 
 
 int main(int argc, char **argv){
-  printf("start\n");
   //yydebug=1;
   return yyparse();
 }

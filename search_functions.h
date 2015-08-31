@@ -9,7 +9,7 @@ void searchSymbol(token_type* _symbol);
 void searchBraceCode(token_type* _brace_code);
 
 void searchDefinitionBlocks(oper_type* _def_blocks);
-void searchDefinitionBlockWithEnd(oper_type* _def_blocks);
-void searchDefinitionBlock(oper_type* _def_blocks);
+void searchDefinitionBlockWithEnd(oper_type* _def_block_w_end);
+void searchDefinitionBlock(oper_type* _def_block);
 
-void searchToken(oper_type* _def_blocks);
+void searchToken(oper_type* _token_block);

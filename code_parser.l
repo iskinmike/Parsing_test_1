@@ -18,18 +18,18 @@
 
 %%
 
-[%][{]		                             {printf("begin_definition_section\n"); BEGIN(DEFINITION_SECTION_BRACE_CODE);  }
+[%][{]		                             { BEGIN(DEFINITION_SECTION_BRACE_CODE);  }
 <DEFINITION_SECTION_BRACE_CODE>.         {;} // whitespace 
 <DEFINITION_SECTION_BRACE_CODE>[ \t\r\n] {;}
-<DEFINITION_SECTION_BRACE_CODE>[%][}]    {BEGIN(INITIAL); printf("%s\n", "end_define_section" );}
+<DEFINITION_SECTION_BRACE_CODE>[%][}]    {BEGIN(INITIAL); }
 
-%token                         { BEGIN(TOKEN_ARGUMENTS); printf("%s\n","begin_token_section" ); return TOKEN_LINE_START;}
+%token                         { BEGIN(TOKEN_ARGUMENTS); ; return TOKEN_LINE_START;}
 <TOKEN_ARGUMENTS>[ \t\r]                 ;
 <TOKEN_ARGUMENTS>[a-zA-Z_][a-zA-Z0-9_]*  { yylval = yytext; return RETURNED_TOKEN;} // Записываем в массив имя аргумента 
-<TOKEN_ARGUMENTS>[\n]                    { BEGIN(INITIAL); printf("%s\n", "end_token_section" ); }
+<TOKEN_ARGUMENTS>[\n]                    { BEGIN(INITIAL);  }
 
 [%][%]              {
-	printf ("%s\n","%%"); 
+	
 	percent_count++;
 	if (percent_count>1) {
 		yyterminate();
@@ -37,16 +37,16 @@
 	return DOUBLE_PERCENT;
 }
 
-[%][^t{%].*\n 		{printf("%s\n","Erase");} // whitespace
-[%][t][^o].*\n      {printf("%s\n","Erase");} // whitespace
+[%][^t{%].*\n 		{;} // whitespace
+[%][t][^o].*\n      {;} // whitespace
 
 [/][*]              {  BEGIN(COMMENT); }
 <COMMENT>[^*][^/]   {;} // whitespace <COMMENT>[ \t\r\n]  {;} 
-<COMMENT>[*][/]     {  BEGIN(INITIAL); printf("comment_construct_1\n");}
+<COMMENT>[*][/]     {  BEGIN(INITIAL); }
 
 [{]                 {  yylval = ""; BEGIN(BRACE_CODE); }
 <BRACE_CODE>[^}]+	{;} //<BRACE_CODE>[ \t\r\n]   {;}
-<BRACE_CODE>[}]     {  BEGIN(INITIAL); printf("brace_code\n"); return BRACE_CODE_TOKEN; }
+<BRACE_CODE>[}]     {  BEGIN(INITIAL);  return BRACE_CODE_TOKEN; }
 
 [/][/].*\n      ; // comment
 
@@ -64,7 +64,7 @@
 						}
 
 [ \t\r\n]      			; // whitespace
-[;:|] 			{  printf("%s\n", ";:|" ); ;return *yytext; }
+[;:|] 			{ return *yytext; }
 .               yyerror("Invalid character");
 
 %%

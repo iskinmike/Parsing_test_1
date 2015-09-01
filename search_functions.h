@@ -17,3 +17,4 @@ void searchToken(oper_type* _token_block);
 void searchSameVariables(oper_type* start_OP);
 
 void setGlobalOperator(oper_type* _oper);
+void createAdditionalConnections();

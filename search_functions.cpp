@@ -2,94 +2,137 @@
 #include <iostream>
 #include <list>
 #include <vector>
-
+#include <map>
 #include <class_struct.h>
 #include <search_functions.h>
 
 oper_type* g_oper=NULL;
 
+std::vector<variable*> var_vector;
+std::map<variable*,oper_type*> var_map;
+
+
 void setGlobalOperator(oper_type* _oper){
   g_oper= _oper;
 };
 
-operator_class* findInOPS(oper_type* _OPS){
-  operators* _b = dynamic_cast<operators*>(_OPS);
-  if (_b) {
-    if (_b->pointer_to_OPS != NULL) {
-      searchOPS(_b->pointer_to_OPS);
-    }
-    if (_b->pointer_to_OP != NULL) {
-      //printf("%s -> ", _b->_node_name.c_str());
-      operator_class* _d = dynamic_cast<operator_class*>(_b->pointer_to_OP);
-      if (_d->variable_pointer != NULL){
-        return _d;
+
+
+/*
+  operator_class* findInOPS(oper_type* _OPS){
+    operators* _b = dynamic_cast<operators*>(_OPS);
+    if (_b) {
+      if (_b->pointer_to_OPS != NULL) {
+        searchOPS(_b->pointer_to_OPS);
       }
-      //searchOP(_b->pointer_to_OP);
-    }
-  }
-  return  NULL;
-};
-
-void findSameVariable(oper_type* start_OP, variable* searched_variable){
-  std::string str_1, str_2;
-  operator_class* finded_oper_p;
-  finded_oper_p = findInOPS(start_OP);
-  if (finded_oper_p != NULL){
-    variable* finded_var_p = dynamic_cast<variable*>(finded_oper_p->variable_pointer);
-    str_1 = searched_variable->returnName();
-    str_2 = finded_var_p->returnName();
-    if (str_1.compare(str_2) == 0) {
-      _var_p->def_operator = finded_oper_p;
-    }
-  }
-};
-
-
-oper_type* findSameVarName(std::string searched_var_name){
-  // Вызываем функцию для которая залезет в оп и будет искать пока не найдет или не упрется в нуль
-  findVarNameInOP(g_oper, searched_var_name);
-
-
-}
-
-oper_type* findVarNameInOP(oper_type* _oper, std::string ser_name){
-  operators* _b = dynamic_cast<operators*>(_oper);
-  if (_b) {
-    if (_b->pointer_to_OP != NULL) {
-      operator_class* _d = dynamic_cast<operator_class*>(_b->pointer_to_OP);
-      std::string str_1 = _d->variable_pointer->returnName();
-      if (ser_name.compare(str_1) == 0){
-        return _b->pointer_to_OP;
+      if (_b->pointer_to_OP != NULL) {
+        //printf("%s -> ", _b->_node_name.c_str());
+        operator_class* _d = dynamic_cast<operator_class*>(_b->pointer_to_OP);
+        if (_d->variable_pointer != NULL){
+          return _d;
+        }
+        //searchOP(_b->pointer_to_OP);
       }
     }
-    if (_b->pointer_to_OPS != NULL) {
-      findVarNameInOP(_b->pointer_to_OPS,ser_name);
-    }
-    else {return NULL;}
+    return  NULL;
+  };
 
-}
+  void findSameVariable(oper_type* start_OP, variable* searched_variable){
+    std::string str_1, str_2;
+    operator_class* finded_oper_p;
+    finded_oper_p = findInOPS(start_OP);
+    if (finded_oper_p != NULL){
+      variable* finded_var_p = dynamic_cast<variable*>(finded_oper_p->variable_pointer);
+      str_1 = searched_variable->returnName();
+      str_2 = finded_var_p->returnName();
+      if (str_1.compare(str_2) == 0) {
+        searched_variable->def_operator = finded_oper_p;
+      }
+    }
+  };
+
+  oper_type* findVarNameInOP(oper_type* _oper, std::string ser_name);
+  oper_type* findSameVarName(std::string searched_var_name){
+    // Вызываем функцию для которая залезет в оп и будет искать пока не найдет или не упрется в нуль
+    findVarNameInOP(g_oper, searched_var_name);
+
+
+  }
+
+  oper_type* findVarNameInOP(oper_type* _oper, std::string ser_name){
+    operators* _b = dynamic_cast<operators*>(_oper);
+    if (_b) {
+      if (_b->pointer_to_OP != NULL) {
+        operator_class* _d = dynamic_cast<operator_class*>(_b->pointer_to_OP);
+        std::string str_1 = _d->variable_pointer->returnName();
+        if (ser_name.compare(str_1) == 0){
+          return _b->pointer_to_OP;
+        }
+      }
+      if (_b->pointer_to_OPS != NULL) {
+        findVarNameInOP(_b->pointer_to_OPS,ser_name);
+      }
+      else {return NULL;}
+  }
+*/
+
+
+
+void createAdditionalConnections(){
+  printf("%s\n","edge [color=red];" );
+  for (auto i=var_vector.begin(); i!=var_vector.end(); ++i){
+    for (auto j=var_map.begin(); j!=var_map.end(); ++j){
+
+      std::string map_string;
+      map_string.assign(j->first->returnName());
+      map_string=map_string.substr(map_string.find('\"')+1);
+      map_string=map_string.substr(0,map_string.find('\"'));
+
+      std::string temp_str;
+      temp_str.assign((*i)->returnName());
+      temp_str=temp_str.substr(temp_str.find("\"")+1);
+      temp_str=temp_str.substr(0,temp_str.find("\""));
+
+      //printf("%s -> %s ;\n",temp_str.c_str(),map_string.c_str());
+
+      if (temp_str.compare(map_string) ==0 ){
+        (*i)->def_operator = j->second;
+        temp_str.assign((*i)->returnName());
+        temp_str=temp_str.substr(0,temp_str.find(";"));
+        printf("%s -> %s;\n",temp_str.c_str(), j->second->_node_name.c_str() );
+      }
+    }
+  }
+};
+
+
 
 
 void searchOPS(oper_type* _OPS) {
   operators* _b = dynamic_cast<operators*>(_OPS);
   if (_b) {
     if (_b->pointer_to_OPS != NULL) {
-      printf("%s -> ", _b->_node_name.c_str());
+      //printf("%s -> ", _b->_node_name.c_str());
       searchOPS(_b->pointer_to_OPS);
     }
     if (_b->pointer_to_OP != NULL) {
-      printf("%s -> ", _b->_node_name.c_str());
+      //printf("%s -> ", _b->_node_name.c_str());
       searchOP(_b->pointer_to_OP);
     }
   } else {
     printf("%s\n", "operator type");
     searchOP(_OPS);
   }
-};
+}
 
 void searchOP(oper_type* _OP) {
   operator_class* _b = dynamic_cast<operator_class*>(_OP);
   if (_b->variable_pointer != NULL){
+    
+    ///// additional block. Fill map of variables and operators
+    variable* _var_p = dynamic_cast<variable*>(_b->variable_pointer);
+    var_map[_var_p] = _OP;
+    /////
     printf("%s -> ", _b->_node_name.c_str());
     searchVariable(_b->variable_pointer);
   }
@@ -101,8 +144,10 @@ void searchOP(oper_type* _OP) {
 
 void searchVariable(token_type* _variable) {
   variable* _var_p = dynamic_cast<variable*>(_variable);
+  ///// additional block. Fill vector of variables
+  //var_vector.push_back(_var_p);
+  /////
   printf("%s ;\n", _var_p->returnName().c_str());
-  findSameVariable(g_oper,_var_p);
 }
 
 void searchDefinitionBlocks(oper_type* _def_blocks) {
@@ -174,8 +219,12 @@ void searchSymbol(token_type* _token) {
   symbol* _token_pointer = dynamic_cast<symbol*>(_token);
   if (_token_pointer) {
     printf("%s ;\n", _token_pointer->returnName().c_str());
-  } else {
-    //
+  } 
+  else {
+    ///// additional block. Fill vector of variables
+    variable* _var_p = dynamic_cast<variable*>(_token);
+    var_vector.push_back(_var_p);
+    /////
     searchVariable(_token);
   }
 };

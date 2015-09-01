@@ -23,6 +23,7 @@ class variable : public token_type
     {
     	std::string _token_name;
     public:
+    	oper_type* def_operator;
     	std::string returnName();
     	variable(std::string assigned_name);
     	//~variable();
@@ -52,7 +53,7 @@ class operators : public oper_type{
         public:
         	int _node_number;
         	color_t _color;
-        	
+
         	//std::string _node_name;
         	std::list<oper_type*> ops;
         	oper_type* pointer_to_OP;

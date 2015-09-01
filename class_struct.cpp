@@ -34,7 +34,12 @@ variable::variable(std::string assigned_name) {
 	_token_name.append(temp_str);
 	_token_name.append(" [label=\"");
 	_token_name.append(assigned_name);
-	_token_name.append("\"]");
+	if(def_operator) {
+		_token_name.append("\" shape=polygon,sides=5,color=lightblue,style=filled ]");
+	}
+	else {
+		_token_name.append("\" shape=polygon,sides=5,color=mediumturquoise,style=filled ]");
+	}
 	_variable_number++;
 };
 ///
@@ -46,7 +51,7 @@ symbol::symbol(std::string assigned_name){
 	_token_name.append(temp_str);
 	_token_name.append(" [label=\"");
 	_token_name.append(assigned_name);
-	_token_name.append("\"]");
+	_token_name.append("\" shape=polygon,sides=5,color=aquamarine,style=filled]");
 	_symbol_number++;
 };
 ///

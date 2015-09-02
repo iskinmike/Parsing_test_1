@@ -1,6 +1,9 @@
 %{
 	#include <string>
 	#include <vector>
+	#include <stdio.h>
+	#include <fstream>
+	#include <iostream>
    #define YYSTYPE std::string
    #include "code_parser.tab.h"
    void yyerror(char const *s);
@@ -14,14 +17,10 @@
 %x TOKEN_ARGUMENTS
 %x BRACE_CODE
 %x COMMENT
-%x DEFINITION_SECTION_BRACE_CODE
 
 %%
 
-[%][{]		                             { BEGIN(DEFINITION_SECTION_BRACE_CODE);  }
-<DEFINITION_SECTION_BRACE_CODE>.         {;} // whitespace 
-<DEFINITION_SECTION_BRACE_CODE>[ \t\r\n] {;}
-<DEFINITION_SECTION_BRACE_CODE>[%][}]    {BEGIN(INITIAL); }
+[%][{][^%]*[%][}]    {; }
 
 %token                         { BEGIN(TOKEN_ARGUMENTS); ; return TOKEN_LINE_START;}
 <TOKEN_ARGUMENTS>[ \t\r]                 ;
@@ -68,3 +67,10 @@
 .               yyerror("Invalid character");
 
 %%
+
+void setNewBuffer(const char *buffer_pointer){
+	YY_BUFFER_STATE bp;
+
+	bp = yy_scan_string(buffer_pointer);
+	yy_switch_to_buffer(bp);
+}

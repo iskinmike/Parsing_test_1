@@ -6,76 +6,15 @@
 #include <class_struct.h>
 #include <search_functions.h>
 
-oper_type* g_oper=NULL;
+OperatorTypeClass* g_oper=NULL;
 
-std::vector<variable*> var_vector;
-std::map<variable*,oper_type*> var_map;
+std::vector<Variable*> var_vector;
+std::map<Variable*,OperatorTypeClass*> var_map;
 
 
-void setGlobalOperator(oper_type* _oper){
+void setGlobalOperator(OperatorTypeClass* _oper){
   g_oper= _oper;
 };
-
-
-
-/*
-  operator_class* findInOPS(oper_type* _OPS){
-    operators* _b = dynamic_cast<operators*>(_OPS);
-    if (_b) {
-      if (_b->pointer_to_OPS != NULL) {
-        searchOPS(_b->pointer_to_OPS);
-      }
-      if (_b->pointer_to_OP != NULL) {
-        //printf("%s -> ", _b->_node_name.c_str());
-        operator_class* _d = dynamic_cast<operator_class*>(_b->pointer_to_OP);
-        if (_d->variable_pointer != NULL){
-          return _d;
-        }
-        //searchOP(_b->pointer_to_OP);
-      }
-    }
-    return  NULL;
-  };
-
-  void findSameVariable(oper_type* start_OP, variable* searched_variable){
-    std::string str_1, str_2;
-    operator_class* finded_oper_p;
-    finded_oper_p = findInOPS(start_OP);
-    if (finded_oper_p != NULL){
-      variable* finded_var_p = dynamic_cast<variable*>(finded_oper_p->variable_pointer);
-      str_1 = searched_variable->returnName();
-      str_2 = finded_var_p->returnName();
-      if (str_1.compare(str_2) == 0) {
-        searched_variable->def_operator = finded_oper_p;
-      }
-    }
-  };
-
-  oper_type* findVarNameInOP(oper_type* _oper, std::string ser_name);
-  oper_type* findSameVarName(std::string searched_var_name){
-    // Вызываем функцию для которая залезет в оп и будет искать пока не найдет или не упрется в нуль
-    findVarNameInOP(g_oper, searched_var_name);
-
-
-  }
-
-  oper_type* findVarNameInOP(oper_type* _oper, std::string ser_name){
-    operators* _b = dynamic_cast<operators*>(_oper);
-    if (_b) {
-      if (_b->pointer_to_OP != NULL) {
-        operator_class* _d = dynamic_cast<operator_class*>(_b->pointer_to_OP);
-        std::string str_1 = _d->variable_pointer->returnName();
-        if (ser_name.compare(str_1) == 0){
-          return _b->pointer_to_OP;
-        }
-      }
-      if (_b->pointer_to_OPS != NULL) {
-        findVarNameInOP(_b->pointer_to_OPS,ser_name);
-      }
-      else {return NULL;}
-  }
-*/
-
 
 
 void createAdditionalConnections(){
@@ -108,30 +47,30 @@ void createAdditionalConnections(){
 
 
 
-void searchOPS(oper_type* _OPS) {
-  operators* _b = dynamic_cast<operators*>(_OPS);
+void searchOperators(OperatorTypeClass* _operators) {
+  Operators* _b = dynamic_cast<Operators*>(_operators);
   if (_b) {
-    if (_b->pointer_to_OPS != NULL) {
+    if (_b->pointer_to_operators != NULL) {
       //printf("%s -> ", _b->_node_name.c_str());
-      searchOPS(_b->pointer_to_OPS);
+      searchOperators(_b->pointer_to_operators);
     }
-    if (_b->pointer_to_OP != NULL) {
+    if (_b->pointer_to_operator != NULL) {
       //printf("%s -> ", _b->_node_name.c_str());
-      searchOP(_b->pointer_to_OP);
+      searchOperator(_b->pointer_to_operator);
     }
   } else {
     printf("%s\n", "operator type");
-    searchOP(_OPS);
+    searchOperator(_operators);
   }
 }
 
-void searchOP(oper_type* _OP) {
-  operator_class* _b = dynamic_cast<operator_class*>(_OP);
+void searchOperator(OperatorTypeClass* _operator) {
+  OperatorClass* _b = dynamic_cast<OperatorClass*>(_operator);
   if (_b->variable_pointer != NULL){
     
-    ///// additional block. Fill map of variables and operators
-    variable* _var_p = dynamic_cast<variable*>(_b->variable_pointer);
-    var_map[_var_p] = _OP;
+    ///// additional block. Fill map of variables and Operators
+    Variable* _var_p = dynamic_cast<Variable*>(_b->variable_pointer);
+    var_map[_var_p] = _operator;
     /////
     printf("%s -> ", _b->_node_name.c_str());
     searchVariable(_b->variable_pointer);
@@ -142,32 +81,32 @@ void searchOP(oper_type* _OP) {
   }
 };
 
-void searchVariable(token_type* _variable) {
-  variable* _var_p = dynamic_cast<variable*>(_variable);
+void searchVariable(TokenTypeClass* _variable) {
+  Variable* _var_p = dynamic_cast<Variable*>(_variable);
   ///// additional block. Fill vector of variables
   //var_vector.push_back(_var_p);
   /////
   printf("%s ;\n", _var_p->returnName().c_str());
 }
 
-void searchDefinitionBlocks(oper_type* _def_blocks) {
-  definition_blocks_class* _b = dynamic_cast<definition_blocks_class*>(_def_blocks);
+void searchDefinitionBlocks(OperatorTypeClass* _def_blocks) {
+  DefinitionBlocksClass* _b = dynamic_cast<DefinitionBlocksClass*>(_def_blocks);
   if (_b) {
-    if (_b->pointer_to_DEF_BLOCK_WITH_END){
+    if (_b->pointer_to_def_block_with_brace_code){
       printf("%s -> ", _b->_node_name.c_str());
-      searchDefinitionBlockWithEnd(_b->pointer_to_DEF_BLOCK_WITH_END);
+      searchDefinitionBlockWithEnd(_b->pointer_to_def_block_with_brace_code);
     }
-    if (_b->pointer_to_DEF_BLOCKS) {
+    if (_b->pointer_to_def_blocks) {
       printf("%s -> ", _b->_node_name.c_str());
-      searchDefinitionBlocks(_b->pointer_to_DEF_BLOCKS);
+      searchDefinitionBlocks(_b->pointer_to_def_blocks);
     }
   }
   else {printf("%s\n", "smething wrong entered in DefinitionBlocks !!!!!!!!!!!!!!!!!!!!!!!");}
 
 };
 
-void searchDefinitionBlockWithEnd(oper_type* _def_block_w_end) {
-  definition_block_with_end_class* _b = dynamic_cast<definition_block_with_end_class*>(_def_block_w_end);
+void searchDefinitionBlockWithEnd(OperatorTypeClass* _def_block_w_end) {
+  DefinitionBlockWithBraceCode* _b = dynamic_cast<DefinitionBlockWithBraceCode*>(_def_block_w_end);
   if (_b) {
     if (_b->brace_code_pointer != NULL) {
       printf("%s -> ", _b->_node_name.c_str());
@@ -183,8 +122,8 @@ void searchDefinitionBlockWithEnd(oper_type* _def_block_w_end) {
   }
 };
 
-void searchBraceCode(token_type* _brace_code) {
-  brace_code* _brace_code_p = dynamic_cast<brace_code*>(_brace_code);
+void searchBraceCode(TokenTypeClass* _brace_code) {
+  BraceCode* _brace_code_p = dynamic_cast<BraceCode*>(_brace_code);
   if (_brace_code_p) {
     printf("%s ;\n", _brace_code_p->returnName().c_str());
   } else {
@@ -192,8 +131,8 @@ void searchBraceCode(token_type* _brace_code) {
   }
 };
 
-void searchDefinitionBlock(oper_type* _def_block){
-  definition_block_class* _b = dynamic_cast<definition_block_class*>(_def_block);
+void searchDefinitionBlock(OperatorTypeClass* _def_block){
+  DefinitionBlockClass* _b = dynamic_cast<DefinitionBlockClass*>(_def_block);
   if (_b){
     if (_b->pointer_to_token != NULL) {
       printf("%s -> ", _b->_node_name.c_str());
@@ -206,8 +145,8 @@ void searchDefinitionBlock(oper_type* _def_block){
   }
 };
 
-void searchToken(oper_type* _token_block){
-  token_class* _b = dynamic_cast<token_class*>(_token_block);
+void searchToken(OperatorTypeClass* _token_block){
+  TokenClass* _b = dynamic_cast<TokenClass*>(_token_block);
   if (_b) {
     if (_b->_token != NULL){
       searchSymbol(_b->_token);
@@ -215,96 +154,16 @@ void searchToken(oper_type* _token_block){
   }
 };
 
-void searchSymbol(token_type* _token) {
-  symbol* _token_pointer = dynamic_cast<symbol*>(_token);
+void searchSymbol(TokenTypeClass* _token) {
+  Symbol* _token_pointer = dynamic_cast<Symbol*>(_token);
   if (_token_pointer) {
     printf("%s ;\n", _token_pointer->returnName().c_str());
   } 
   else {
     ///// additional block. Fill vector of variables
-    variable* _var_p = dynamic_cast<variable*>(_token);
+    Variable* _var_p = dynamic_cast<Variable*>(_token);
     var_vector.push_back(_var_p);
     /////
     searchVariable(_token);
   }
 };
-
-/*
-  void searchDefinitionBlocks(oper_type* _def_blocks) {
-  definition_blocks_class* _def_blocks_pointer = NULL;
-  try
-  	{
-    _def_blocks_pointer =
-    dynamic_cast<definition_blocks_class*>(_def_blocks);
-  }
-  catch (...) {	
-  }  
-  //
-    if (_def_blocks_pointer) {
-      for (auto i = _def_blocks_pointer->_definition_blocks.begin();
-           i != _def_blocks_pointer->_definition_blocks.end(); ++i) {    	
-        searchDefinitionBlocks(*i);
-      }
-    } else {  	
-      //searchDefinitionBlockWithEnd(_def_blocks);
-    }
-  };
-
-
-  void searchDefinitionBlockWithEnd(oper_type* _def_blocks) {
-    definition_block_with_end_class* _def_block_with_end_pointer =
-        dynamic_cast<definition_block_with_end_class*>(_def_blocks);
-    if (_def_block_with_end_pointer) {
-      // Нужно вызвать две функции для обработки Кода в скобках и  Определения
-      // блока
-      /// Они оба могут быть нулевыми
-      if (_def_block_with_end_pointer->block_pointer) {
-        searchDefinitionBlock(_def_block_with_end_pointer->block_pointer);
-      }
-      if (_def_block_with_end_pointer->brace_code_pointer) {
-        searchBraceCode(_def_block_with_end_pointer->brace_code_pointer);
-      }
-    } else {
-      //
-    }
-  };
-  void searchDefinitionBlock(oper_type* _def_blocks) {
-    definition_block_class* _def_block_pointer =
-        dynamic_cast<definition_block_class*>(_def_blocks);
-    if (_def_block_pointer) {
-      // Просматриваем список и для каждого вызываем эту же функцию
-      for (auto i = _def_block_pointer->_definition_block.begin();
-           i != _def_block_pointer->_definition_block.end(); ++i) {
-         _def_block_pointer->_definition_block.size() );
-        searchDefinitionBlock(*i);
-      }
-    } else {
-      //
-      searchToken(_def_blocks);
-    }
-  };
-
-  void searchBraceCode(token_type* _brace_code) {
-    brace_code* _brace_code_p = dynamic_cast<brace_code*>(_brace_code);
-    if (_brace_code_p) {
-    } else {
-    }
-  };
-
-  void searchToken(oper_type* _def_blocks) {
-    token_class* _token_pointer = dynamic_cast<token_class*>(_def_blocks);
-    if (_token_pointer) {
-      searchSymbol(_token_pointer->_token);
-    } else {
-    }
-  };
-
-  void searchSymbol(token_type* _token) {
-    symbol* _token_pointer = dynamic_cast<symbol*>(_token);
-    if (_token_pointer) {
-    } else {
-      //
-      searchVariable(_token);
-    }
-  };
-*/

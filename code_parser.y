@@ -8,6 +8,9 @@
     #include "create_program_functions.h"
     extern int yylineno;
     extern int yylex();
+
+    extern void setNewBuffer(const char *buffer_pointer);
+
     void yyerror(char const *s) {
       std::cerr << s << ", line " << yylineno << std::endl;
       return;
@@ -18,8 +21,8 @@
 
 	typedef struct {
         std::string str;
-        oper_type* node_t;
-        token_type* token_t; /// Пока не используется но может понадобится
+        OperatorTypeClass* node_t;
+        TokenTypeClass* token_t; /// Пока не используется но может понадобится
     } YYSTYPE;
     #define YYSTYPE YYSTYPE
 
@@ -46,7 +49,7 @@
 
 PROGRAM: TOKEN_SECTION_EMPTY_OR_NOT DOUBLE_PERCENT OPS  {
 															printf("%s\n","digraph G {\nsize =\"40,40\";");
-															searchOPS($3);
+															searchOperators($3);
 															createAdditionalConnections();
 															printf("%s","}");
 														}
@@ -67,60 +70,97 @@ RETURNED_TOKENS:  RETURNED_TOKEN                  { massive_of_tokens.push_back(
 				| RETURNED_TOKENS RETURNED_TOKEN  { massive_of_tokens.push_back($2); }
 ;
 
-OPS:  OP 	 { $$ = new operators($1,"OPS");    } // Наследуется от ОР $$ = new operators($1);
-	| OPS OP { $$ = new operators($1,$2,"OPS"); }
+OPS:  OP 	 { $$ = new Operators($1,"OPS");    } // Наследуется от ОР $$ = new Operators($1);
+	| OPS OP { $$ = new Operators($1,$2,"OPS"); }
 ;
 
 OP:  VARIABLE ':' DEFINITION_BLOCKS ';' { 
-											$$ = new operator_class(new variable($1), $3,"OP");
+											$$ = new OperatorClass(new Variable($1), $3,"OP");
 										}
 ;
 
-DEFINITION_BLOCKS:    DEFINITION_BLOCK_WITH_END                       { $$ = new definition_blocks_class($1,"DEFINITION_BLOCKS");    } 
-					| DEFINITION_BLOCKS '|' DEFINITION_BLOCK_WITH_END { $$ = new definition_blocks_class($1,$3,"DEFINITION_BLOCKS"); }
+DEFINITION_BLOCKS:    DEFINITION_BLOCK_WITH_END                       { $$ = new DefinitionBlocksClass($1,"DEFINITION_BLOCKS");    } 
+					| DEFINITION_BLOCKS '|' DEFINITION_BLOCK_WITH_END { $$ = new DefinitionBlocksClass($1,$3,"DEFINITION_BLOCKS"); }
 ;
 
-DEFINITION_BLOCK_WITH_END:                                      { $$ = new definition_block_with_end_class( NULL,
+DEFINITION_BLOCK_WITH_END:                                      { $$ = new DefinitionBlockWithBraceCode( NULL,
 																											NULL,
 																											"DEFINITION_BLOCK_WITH_END"
 																											);
 																} 
-							| DEFINITION_BLOCK                  { $$ = new definition_block_with_end_class( $1,
+							| DEFINITION_BLOCK                  { $$ = new DefinitionBlockWithBraceCode( $1,
 																											NULL,
 																											"DEFINITION_BLOCK_WITH_END"
 																											);
 																}
-							| DEFINITION_BLOCK BRACE_CODE_TOKEN { $$ = new definition_block_with_end_class( $1,
-																											new brace_code($2),
+							| DEFINITION_BLOCK BRACE_CODE_TOKEN { $$ = new DefinitionBlockWithBraceCode( $1,
+																											new BraceCode($2),
 																											"DEFINITION_BLOCK_WITH_END"
 																											); 
 																}
 							| BRACE_CODE_TOKEN                  { 
-																	$$ = new definition_block_with_end_class( NULL,
-																											  new brace_code($1),
+																	$$ = new DefinitionBlockWithBraceCode( NULL,
+																											  new BraceCode($1),
 																											  "DEFINITION_BLOCK_WITH_END"
 																											  );
 																}
 ;
 
 DEFINITION_BLOCK:	  TOKEN                   { 
-												$$ = new definition_block_class($1,"DEFINITION_BLOCK"); 
-												} // Наследуется от { $$ = new definition_block_class($1); }
-					| DEFINITION_BLOCK TOKEN  { $$ = new definition_block_class($1,$2,"DEFINITION_BLOCK");  }
+												$$ = new DefinitionBlockClass($1,"DEFINITION_BLOCK"); 
+												} // Наследуется от { $$ = new DefinitionBlockClass($1); }
+					| DEFINITION_BLOCK TOKEN  { $$ = new DefinitionBlockClass($1,$2,"DEFINITION_BLOCK");  }
 ;
 
 TOKEN:    VARIABLE  { 
 						//printf("Var %s\n", $1.c_str()); 
-						$$ = new token_class(new variable($1), "TOKEN");
+						$$ = new TokenClass(new Variable($1), "TOKEN");
 					}
 		| SYMBOL    { 
 						//printf("Sym %s\n", $1.c_str());
-						$$ = new token_class(new symbol($1), "TOKEN");
+						$$ = new TokenClass(new Symbol($1), "TOKEN");
 					} 
 ;
 %%
 
 int main(int argc, char **argv){
   //yydebug=1;
+  
+  // Перед вызовом лекса надо считать из файла и в память.
+  int const max_buffer_size = 2048;
+  char buff[max_buffer_size];
+  std::string _str("");
+  FILE * pFile;
+
+  pFile = fopen("temp_test_file.txt","r+");
+
+  if (pFile != NULL)
+  {
+	while (fgets(buff, 2048, pFile)){
+		_str.append(buff);
+	}
+	fclose(pFile);
+	std::string temp_first_pars_string("");
+	int pos_of_percen_brace;
+	pos_of_percen_brace = _str.find("%{");
+	if (pos_of_percen_brace != -1) {
+		temp_first_pars_string = _str.substr(0,pos_of_percen_brace);
+		temp_first_pars_string.append(_str.substr(_str.find("%}")+3));
+		_str.assign(temp_first_pars_string);
+		//std::cout << "test buffer:\n" << _str << std::endl;
+	}
+	else {	
+		//std::cout << "test buffer:\n" << _str << std::endl;
+	}
+  }
+  else {
+    std::cout << "can't open file" << pFile << std::endl;
+  }
+  /// Set New Buffer For Flex Input
+  setNewBuffer(_str.c_str());
+  // Работает, этого должно быть достаточно чтобы собрать например массив строк,
+  //  и из него сделать буфек из которого будем читать
+
+
   return yyparse();
 }

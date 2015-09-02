@@ -1603,7 +1603,7 @@ int main(int argc, char **argv){
   std::string _str("");
   FILE * pFile;
 
-  pFile = fopen("temp_test_file.txt","r+");
+  pFile = fopen(argv[1],"r+");
 
   if (pFile != NULL)
   {

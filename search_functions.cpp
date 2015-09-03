@@ -3,13 +3,16 @@
 #include <list>
 #include <vector>
 #include <map>
-#include <class_struct.h>
-#include <search_functions.h>
+#include "class_struct.h"
+#include "search_functions.h"
+#include "new_struct_for_program.h"
 
 OperatorTypeClass* g_oper=NULL;
 
 std::vector<Variable*> var_vector;
 std::map<Variable*,OperatorTypeClass*> var_map;
+
+std::std::vector<NodeStruct*> node_struct_vector;
 
 
 void setGlobalOperator(OperatorTypeClass* _oper){
@@ -44,9 +47,6 @@ void createAdditionalConnections(){
   }
 };
 
-
-
-
 void searchOperators(OperatorTypeClass* _operators) {
   Operators* _b = dynamic_cast<Operators*>(_operators);
   if (_b) {
@@ -66,6 +66,9 @@ void searchOperators(OperatorTypeClass* _operators) {
 
 void searchOperator(OperatorTypeClass* _operator) {
   OperatorClass* _b = dynamic_cast<OperatorClass*>(_operator);
+  ////// Create New struct
+  node_struct_vector.push_back(new NodeStruct(_b->_node_name));
+
   if (_b->variable_pointer != NULL){
     
     ///// additional block. Fill map of variables and Operators

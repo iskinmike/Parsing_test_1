@@ -7,12 +7,11 @@
 #include "create_program_functions.h"
 #include "new_struct_for_program.h"
 
-{
+
 	////////////////////////////////////////////////
 	void startFunctionTest(){
 		printf("%s\n","test" );
 	}
-
 
 	bool findProgramInString(TokenTypeClass* _token){
 		Variable* _var_p = dynamic_cast<Variable*>(_token);
@@ -34,7 +33,6 @@
 	    temp_str=temp_str.substr(0,temp_str.find("\""));
 	    return temp_str;
 	};
-
 
 	OperatorTypeClass* returnVariablesRefToNextOperator(TokenTypeClass* searched_variable){
 	  Variable* _var_p = dynamic_cast<Variable*>(searched_variable);
@@ -86,33 +84,7 @@
 	  }
 	}
 
-///////////////////////////////////////
-}
 
-
-NodeStruct *_node;
-RuleStruct *_rule;
-VariableStruct *_variable;
-
-/// Нужно на основе нашей структуры сделать новую.
-
-// Сделаем описание
-NodeStruct - 
-	- Эта штука должна содержать имя переменной на которую ссылается Оператор( OperatorClass)
-	- При этом должны быть ссылки на DefinitionBlockWithBraceCode.
-	- Каждый DefinitionBlockWithBraceCode - это правило RuleStruct
-	- В общем Вектор ссылок на RuleStruct
-
-RuleStruct 
-	- Это по сути DefinitionBlockWithBraceCode.
-	- Должен иметь уникальное имя как у DefinitionBlockWithBraceCode.
-	- При составлении графа будем заменять реальное имя на лэйбл с соответствующим номером
-	- Вектор ссылок на VariableStruct.
-
-VariableStruct
-	- Это по сути Variable и Symbol. т.е. будут иметь имена такие же как у всех Токенов. как-то так.
-	- в зависимости от того Символ Токен или Переменная будут разные состояния
-	- У нас будет список Токенов, поэтому будет возможность это определить.
 
 
 

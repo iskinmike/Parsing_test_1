@@ -1,4 +1,7 @@
 
+
+std::string returnNewName(std::string str, int number);
+
 enum class color_t
         {
         	WHITE, 

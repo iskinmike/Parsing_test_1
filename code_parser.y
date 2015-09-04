@@ -3,10 +3,12 @@
     #include <iostream>
     #include <list>
     #include <vector>
+    
     #include "class_struct.h"
+    #include "new_struct_for_program.h"
     #include "search_functions.h"
     #include "create_program_functions.h"
-    #include "new_struct_for_program.h"
+
     extern int yylineno;
     extern int yylex();
 
@@ -49,10 +51,14 @@
 %%
 
 PROGRAM: TOKEN_SECTION_EMPTY_OR_NOT DOUBLE_PERCENT OPS  {
-															printf("%s\n","digraph G {\nsize =\"40,40\";");
+															
 															searchOperators($3);
 															createAdditionalConnections();
-															printf("%s","}");
+															createNodesFromMap();
+															generateAdditionalConnectionsInNewStructure();
+															printf("%s\n","digraph G {\nsize =\"40,40\";");
+															printAllDataFromNewStruct(returnEntryNode());
+															printf("%s\n","}");
 														}
 ; 
 

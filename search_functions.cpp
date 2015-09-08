@@ -9,22 +9,17 @@
 #include "class_struct.h"
 #include "new_struct_for_program.h"
 #include "search_functions.h"
+#include "singleton_data_struct.h"
 
+//std::vector<Variable*> var_vector_for_additional_connections;
+//std::map<Variable*,OperatorTypeClass*> var_map;
+//std::vector<VariableStruct *> var_struct_vector;
+//std::vector<NodeStruct*> node_struct_vector;
 
-OperatorTypeClass* g_oper=NULL;
-
-std::vector<Variable*> d;
-std::map<Variable*,OperatorTypeClass*> var_map;
-std::vector<VariableStruct *> var_struct_vector;
-
-std::vector<NodeStruct*> node_struct_vector;
-
-void setGlobalOperator(OperatorTypeClass* _oper){
-  g_oper= _oper;
-};
+DataStorage& search_functions_data = DataStorage::Instance();
 
 /////////////////////////////// !!!!!!!!!!!!!!!!!!!!!!
-
+/*
 std::string returnLableOfOperator(OperatorTypeClass* _operator){
   //printf("%s\n","try to go work with Lable of Operator" );
   OperatorClass* operator_pointer = dynamic_cast<OperatorClass*>(_operator);
@@ -42,7 +37,6 @@ std::string returnLableOfOperator(OperatorTypeClass* _operator){
   //printf("%s\n","fail" );
   return "";
 };
-
 
 void goIntoDefBlockWBCAndFindVariables(OperatorTypeClass* block_pointer, RuleStruct* temp_rule ) {
   ///приведем к удобному типу
@@ -65,7 +59,7 @@ void goIntoDefBlockWBCAndFindVariables(OperatorTypeClass* block_pointer, RuleStr
         /// Записываем имя Нужно будет еще обработку имени сделать
         temp_variable = new VariableStruct(symbol_pointer->returnName());
         temp_rule->_variable.push_back(temp_variable);
-        var_struct_vector.push_back(temp_variable);
+        search_functions_data.var_struct_vector.push_back(temp_variable);
       }
       else {
         Variable* variable_pointer = dynamic_cast<Variable*>(token_block->_token);
@@ -79,15 +73,12 @@ void goIntoDefBlockWBCAndFindVariables(OperatorTypeClass* block_pointer, RuleStr
             temp_variable->_node_name = returnLableOfOperator(variable_pointer->def_operator);
           }
           temp_rule->_variable.push_back(temp_variable);
-          var_struct_vector.push_back(temp_variable);
+          search_functions_data.var_struct_vector.push_back(temp_variable);
         }
       }
     }
   }
 }
-
-
-
 
 void goIntoDefinitionBlocksAndFindDefBlocksWithBraceCode(OperatorTypeClass *def_blocks_pointer, NodeStruct *temp_node ){
   DefinitionBlocksClass* def_blocks = dynamic_cast<DefinitionBlocksClass*>(def_blocks_pointer);
@@ -115,7 +106,7 @@ void goIntoDefinitionBlocksAndFindDefBlocksWithBraceCode(OperatorTypeClass *def_
 };
 
 void createNodesFromMap(){
-  for (auto j=var_map.begin(); j!=var_map.end(); ++j){
+  for (auto j=search_functions_data.var_map.begin(); j!=search_functions_data.var_map.end(); ++j){
     NodeStruct* temp_node = 
       new NodeStruct(
               j->second->_node_name,
@@ -133,16 +124,15 @@ void createNodesFromMap(){
                   searched_operator->definition_block_pointer,
                   temp_node 
                   );
-    node_struct_vector.push_back(temp_node);
+    search_functions_data.node_struct_vector.push_back(temp_node);
   }
 }
 
-
 void generateAdditionalConnectionsInNewStructure(){
-  for (auto i=var_struct_vector.begin(); i != var_struct_vector.end(); ++i){
+  for (auto i=search_functions_data.var_struct_vector.begin(); i != search_functions_data.var_struct_vector.end(); ++i){
     /// Пройдемся по всем векторам и проверим как  
     /// проверим какие имена переменных совпадают с именами переменных в карте и установим соответствующие связи
-    for (auto j=node_struct_vector.begin(); j!=node_struct_vector.end(); ++j){
+    for (auto j=search_functions_data.node_struct_vector.begin(); j!=search_functions_data.node_struct_vector.end(); ++j){
       // Дальше уже будем проверять и создавать сответствующие связи
       if ((*i)->_node_name == (*j)->_lable_data) {
         //std::cout << "connection created"<<  (*i)->_node_name << " "<< (*j)->_name << std::endl;
@@ -151,21 +141,8 @@ void generateAdditionalConnectionsInNewStructure(){
     }
   }
 }
-
-NodeStruct* returnEntryNode(){
-  auto i = node_struct_vector.begin();
-  return (*i);
-}
-
-void createNewGraph(OperatorTypeClass* start_operator){
-};
-
-
-
-void printNodeLable(NodeStruct* _node);
-void printRuleLable(RuleStruct* _rule);
-void printVariableLable(VariableStruct* _variable);
-
+*/
+/*
 void printNodeLable(NodeStruct* _node){
   if (_node->_rule.size() != 0) {
     for (auto i = _node->_rule.begin(); i!= _node->_rule.end(); ++i){
@@ -188,20 +165,13 @@ void printRuleLable(RuleStruct* _rule){
   }
 };
 void printVariableLable(VariableStruct* _variable){
-  _variable->printLable();
+  if (_variable->_node == NULL){
+    _variable->printLable();
+  }
   //if (_variable->_node != NULL) {
     //printNodeLable(_variable->_node);
   //}
 };
-
-
-
-
-
-void printNodeData(NodeStruct* _node);
-void printRuleData(RuleStruct* _rule);
-void printVariableData(VariableStruct* _variable);
-
 
 void printNodeData(NodeStruct* _node){
   //printf("%s ->\n", _node->_name.c_str());
@@ -233,49 +203,42 @@ void printRuleData(RuleStruct* _rule){
 };
 void printVariableData(VariableStruct* _variable){
   //printf("%s\n", _variable->_name.c_str());
-  printf("%s;\n", _variable->_variable_uniq_name.c_str() );
-  //if (_variable->_node_name.length()>1 ) {
-    //std::cout << " ----------- "<<_variable->_node_name << std::endl;
-  //}
-  //std::cout << _variable->_node << std::endl;
+  //printf("%s;\n", _variable->_variable_uniq_name.c_str() );
   if (_variable->_node != NULL) {
     // Эти связи отдельно сделаем
-
+    printf("%s;\n",_variable->_node->_node_uniq_name.c_str() );
     //printf("%s -> ", _variable->_variable_uniq_name.c_str() );
     //printNodeData(_variable->_node);
   }
+  else {
+    printf("%s;\n", _variable->_variable_uniq_name.c_str() );
+  }
 };
 
-
-void printAllDataFromNewStruct(NodeStruct* _node){
-  for (auto i = node_struct_vector.begin(); i!= node_struct_vector.end(); ++i){
+void printAllDataFromNewStruct(){
+  for (auto i = search_functions_data.node_struct_vector.begin(); i!= search_functions_data.node_struct_vector.end(); ++i){
     printNodeData(*i);
   }
   // теперь надо вывести все связи
-  for (auto i=var_struct_vector.begin(); i != var_struct_vector.end(); ++i){
-    if ((*i)->_node != NULL) {
-      printf("%s -> %s;\n",(*i)->_variable_uniq_name.c_str(), (*i)->_node->_node_uniq_name.c_str());
-    }
-  }
-  for (auto i = node_struct_vector.begin(); i!= node_struct_vector.end(); ++i){
+
+  ///for (auto i=search_functions_data.var_struct_vector.begin(); i != search_functions_data.var_struct_vector.end(); ++i){
+  ///  if ((*i)->_node != NULL) {
+  ///    printf("%s -> %s;\n",(*i)->_variable_uniq_name.c_str(), (*i)->_node->_node_uniq_name.c_str());
+  ///  }
+  ///}
+
+  for (auto i = search_functions_data.node_struct_vector.begin(); i!= search_functions_data.node_struct_vector.end(); ++i){
     printNodeLable(*i);
   }
 }
-
-
-/// Сделаем еще 1 проход который расставит наши лэйблы
-
-
-
-
-
+*/
 /////////////////////////////// !!!!!!!!!!!!!!!!!!!!!!!
 
 
 void createAdditionalConnections(){
   //printf("%s\n","edge [color=red];" );
-  for (auto i=d.begin(); i!=d.end(); ++i){
-    for (auto j=var_map.begin(); j!=var_map.end(); ++j){
+  for (auto i=search_functions_data.var_vector_for_additional_connections.begin(); i!=search_functions_data.var_vector_for_additional_connections.end(); ++i){
+    for (auto j=search_functions_data.var_map.begin(); j!=search_functions_data.var_map.end(); ++j){
       
       std::string map_string;
       map_string.assign(j->first->returnName());
@@ -298,7 +261,7 @@ void createAdditionalConnections(){
       }
     }
   }
-  //for (auto j=d.begin(); j!=d.end(); ++j){
+  //for (auto j=search_functions_data.var_vector_for_additional_connections.begin(); j!=search_functions_data.var_vector_for_additional_connections.end(); ++j){
   //  std::cout << (*j)->def_operator << std::endl;
   //}
 };
@@ -327,7 +290,7 @@ void searchOperator(OperatorTypeClass* _operator) {
     
     ///// additional block. Fill map of variables and Operators
     Variable* _var_p = dynamic_cast<Variable*>(_b->variable_pointer);
-    var_map[_var_p] = _operator;
+    search_functions_data.var_map[_var_p] = _operator;
     /////
     //printf("%s -> ", _b->_node_name.c_str());
     searchVariable(_b->variable_pointer);
@@ -421,7 +384,7 @@ void searchSymbol(TokenTypeClass* _token) {
   else {
     ///// additional block. Fill vector of variables
     Variable* _var_p = dynamic_cast<Variable*>(_token);
-    d.push_back(_var_p);
+    search_functions_data.var_vector_for_additional_connections.push_back(_var_p);
     /////
     searchVariable(_token);
   }

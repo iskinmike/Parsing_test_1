@@ -1,0 +1,37 @@
+# Environment
+CC=g++
+CCC=g++
+CXX=g++
+
+RM = rm
+MKDIR = mkdir
+
+# Constants
+FLAGS_MUTUAL = -Wall -m32 -std=c++11 -MMD -MP -MF "${OBJECTDIR}/$@.d"
+
+.PHONY: debug
+
+debug: OBJECTDIR = build/Debug
+debug: FLAGS = -g ${FLAGS_MUTUAL}
+debug: FILENAME_FIX = debug
+debug: clean module
+
+release: OBJECTDIR = build/Release
+release: FLAGS = -O3 ${FLAGS_MUTUAL}
+release: FILENAME_FIX = release
+release: clean module
+
+clean:
+	@echo "-------------------------" 
+	${RM} -rf ${OBJECTDIR}
+
+token_generator.o: token_generator.cpp
+	@echo "-------------------------" 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} -f "${OBJECTDIR}/$@.d"
+	$(COMPILE.cc) $(FLAGS) -o ${OBJECTDIR}/token_generator.o token_generator.cpp
+
+module: token_generator.o
+	@echo "-------------------------" 
+	${MKDIR} -p ${OBJECTDIR}
+	${LINK.cc} -m32 -shared ${OBJECTDIR}/token_generator.o -o ${OBJECTDIR}/token_generator_$(FILENAME_FIX).dll

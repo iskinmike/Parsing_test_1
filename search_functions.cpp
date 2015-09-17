@@ -16,7 +16,7 @@
 //std::vector<VariableStruct *> var_struct_vector;
 //std::vector<NodeStruct*> node_struct_vector;
 
-DataStorage& search_functions_data = DataStorage::Instance();
+GlobalDataStorage& search_functions_data = GlobalDataStorage::Instance();
 
 /////////////////////////////// !!!!!!!!!!!!!!!!!!!!!!
 /*

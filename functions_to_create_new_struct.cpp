@@ -11,7 +11,7 @@
 #include "singleton_data_struct.h"
 
 
-DataStorage& create_functions_data = DataStorage::Instance();
+GlobalDataStorage& create_functions_data = GlobalDataStorage::Instance();
 
 /////////////////////////////// !!!!!!!!!!!!!!!!!!!!!!
 

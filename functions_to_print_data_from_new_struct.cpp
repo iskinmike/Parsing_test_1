@@ -11,7 +11,7 @@
 #include "singleton_data_struct.h"
 #include "functions_to_print_data_from_new_struct.h"
 
-DataStorage& print_functions_data = DataStorage::Instance();
+GlobalDataStorage& print_functions_data = GlobalDataStorage::Instance();
 
 //////////////////////////////////////////////// PRINT LABLE
 void printNodeLable(NodeStruct* _node){

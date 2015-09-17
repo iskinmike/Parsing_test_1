@@ -9,12 +9,14 @@
 #include <time.h>
 #include "token_generator.h"
 
+void printHelloFromSo(){
+	printf("%s\n", "Hello from Shared library, all seems to work good!");
+};
 
 std::string choosePregenString(){
 	DataStorage& data = DataStorage::Instance();
 	return data.pregen_strings[rand() % data.pregen_strings.size()];
-}
-
+};
 std::string returnIntToString(int number) {
 	std::string str;
 	char buf[10];
@@ -22,7 +24,6 @@ std::string returnIntToString(int number) {
 	str.assign(buf);
 	return str;
 };
-
 std::string generateString(){
 	std::string temp_str("");
 	int count_of_characters = rand() % 10 + 3;
@@ -31,8 +32,7 @@ std::string generateString(){
 		temp_str.append((data.mass_of_chars + rand() % 63), 1);
 	}
 	return temp_str;
-}
-
+};
 std::string generateNumber(){
 	std::string temp_str("");
 	int count_of_numbers = rand() % 10 + 1;
@@ -62,7 +62,6 @@ std::string generateId(){
 	}
 	return temp_str;
 };
-
 std::string generateNameAndMacros(){
 	std::string temp_str("");
 	temp_str.append(generateString());
@@ -108,18 +107,16 @@ std::string searchSimilarStringInData(std::string recv_str){
 			}
 		}
 		else {
-			return "nothing";
+			return "";
 		}
 	}
 };
 
-
 // Ёто будет внешн€€ функци€  ѕусть вызывает что-нить еще
-PREFIX_FUNC_DLL std::string getToken(std::string recv_str){
+std::string getToken(std::string recv_str){
 	recv_str = searchSimilarStringInData(recv_str);
 	return recv_str;
 };
-
 
 DataStorage::DataStorage()
 {
@@ -176,11 +173,11 @@ DataStorage::DataStorage()
 		}
 	}
 
-	pregen_strings.push_back("fail");
-	pregen_strings.push_back("success");
-	pregen_strings.push_back("please wait");
-	pregen_strings.push_back("change color");
-	pregen_strings.push_back("name of variable");
-	pregen_strings.push_back("robot id");
-	pregen_strings.push_back("error");
+	pregen_strings.push_back("pregen_fail");
+	pregen_strings.push_back("pregen_success");
+	pregen_strings.push_back("pregen_please_wait");
+	pregen_strings.push_back("pregen_change_color");
+	pregen_strings.push_back("pregen_name_of_variable");
+	pregen_strings.push_back("pregen_robot_id");
+	pregen_strings.push_back("pregen_error");
 };

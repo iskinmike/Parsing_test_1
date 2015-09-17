@@ -1,14 +1,20 @@
-#ifdef _WIN32
-	#define PREFIX_FUNC_DLL __declspec(dllexport)
-#else
-	#define PREFIX_FUNC_DLL
+
+#ifndef _STRING_
+	#include <string>
+#endif
+#ifndef _MAP_
+	#include <map>
+#endif
+#ifndef _VECTOR_
+	#include <vector>
 #endif
 
-PREFIX_FUNC_DLL std::string getToken(std::string recv_str);
 
+std::string getToken(std::string recv_str);
 std::string searchSimilarStringInData(std::string recv_str);
 
 // Пока без class enum 
+void printHelloFromSo();
 
 #define GENERATE_NUM 0
 #define GENERATE_ROBOT_VAR 1

@@ -10,6 +10,7 @@
     #include "create_program_functions.h"
     #include "functions_to_create_new_struct.h"
     #include "functions_to_print_data_from_new_struct.h"
+    
 
     extern int yylineno;
     extern int yylex();
@@ -53,7 +54,7 @@
 %%
 
 PROGRAM: TOKEN_SECTION_EMPTY_OR_NOT DOUBLE_PERCENT OPS  {
-															
+															//printHelloFromSo();
 															searchOperators($3);
 															createAdditionalConnections();
 															createNodesFromMap();
@@ -61,6 +62,7 @@ PROGRAM: TOKEN_SECTION_EMPTY_OR_NOT DOUBLE_PERCENT OPS  {
 															printf("%s\n","digraph G {\nsize =\"40,40\";");
 															printAllDataFromNewStruct();
 															printf("%s\n","}");
+															generateProgramCode();
 														}
 ; 
 

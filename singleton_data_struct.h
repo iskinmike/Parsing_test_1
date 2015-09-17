@@ -1,30 +1,27 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream>
-#include <list>
 #include <vector>
 #include <map>
 
-
+#ifndef _SETTINGS_STRUCT_
+#include "settings_struct.h"
+#endif
 // Наверное стоит сделать его синглтоном чтобы 
 // всегда работали с одним и теми же данными в памяти
-class DataStorage
+class GlobalDataStorage
 {
 public:
-	int i;
-	// Карта имен. Имя токена - что вернуть.
 	std::vector<Variable*> var_vector_for_additional_connections;
 	std::map<Variable*,OperatorTypeClass*> var_map;
 	std::vector<VariableStruct *> var_struct_vector;
 	std::vector<NodeStruct*> node_struct_vector;
+	std::vector<SettingsStruct*> set_of_settings_structs;
 	// Функция которая вернет структуру
-	static DataStorage& Instance()
+	static GlobalDataStorage& Instance()
 	{
-		static DataStorage theSingleInstance;
+		static GlobalDataStorage theSingleInstance;
 		return theSingleInstance;
 	}
 private:
-	DataStorage(){};
-	DataStorage(const DataStorage&) = delete;
-	DataStorage& operator=(const DataStorage&) = delete;
+	GlobalDataStorage(){};
+	GlobalDataStorage(const GlobalDataStorage&) = delete;
+	GlobalDataStorage& operator=(const GlobalDataStorage&) = delete;
 };

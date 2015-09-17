@@ -1,0 +1,2 @@
+cp /home/mike/workspace/flex_bison/test6_code2/rcml_token_generator/*.*  /home/mike/repo/parsing_test_1/rcml_token_generator/
+cp /home/mike/workspace/flex_bison/test6_code2/rcml_token_generator/*Make*  /home/mike/repo/parsing_test_1/rcml_token_generator/

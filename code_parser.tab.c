@@ -75,6 +75,7 @@
     #include "create_program_functions.h"
     #include "functions_to_create_new_struct.h"
     #include "functions_to_print_data_from_new_struct.h"
+    
 
     extern int yylineno;
     extern int yylex();
@@ -98,7 +99,7 @@
 
     //#define YYPRINT(file, type, value) printf("%d", value);
 
-#line 102 "code_parser.tab.c" /* yacc.c:339  */
+#line 103 "code_parser.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -155,7 +156,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 159 "code_parser.tab.c" /* yacc.c:358  */
+#line 160 "code_parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -453,9 +454,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    55,    55,    67,    68,    71,    72,    75,    78,    79,
-      82,    83,    86,    91,    92,    95,   100,   105,   110,   118,
-     121,   124,   128
+       0,    56,    56,    69,    70,    73,    74,    77,    80,    81,
+      84,    85,    88,    93,    94,    97,   102,   107,   112,   120,
+     123,   126,   130
 };
 #endif
 
@@ -1240,9 +1241,9 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 55 "code_parser.y" /* yacc.c:1646  */
+#line 56 "code_parser.y" /* yacc.c:1646  */
     {
-															
+															//printHelloFromSo();
 															searchOperators((yyvsp[0].node_t));
 															createAdditionalConnections();
 															createNodesFromMap();
@@ -1250,129 +1251,130 @@ yyreduce:
 															printf("%s\n","digraph G {\nsize =\"40,40\";");
 															printAllDataFromNewStruct();
 															printf("%s\n","}");
+															generateProgramCode();
 														}
-#line 1255 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1257 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 78 "code_parser.y" /* yacc.c:1646  */
+#line 80 "code_parser.y" /* yacc.c:1646  */
     { massive_of_tokens.push_back((yyvsp[0].str)); }
-#line 1261 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1263 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 79 "code_parser.y" /* yacc.c:1646  */
+#line 81 "code_parser.y" /* yacc.c:1646  */
     { massive_of_tokens.push_back((yyvsp[0].str)); }
-#line 1267 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1269 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 82 "code_parser.y" /* yacc.c:1646  */
+#line 84 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new Operators((yyvsp[0].node_t),"OPS");    }
-#line 1273 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1275 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 83 "code_parser.y" /* yacc.c:1646  */
+#line 85 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new Operators((yyvsp[-1].node_t),(yyvsp[0].node_t),"OPS"); }
-#line 1279 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1281 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 86 "code_parser.y" /* yacc.c:1646  */
+#line 88 "code_parser.y" /* yacc.c:1646  */
     { 
 											(yyval.node_t) = new OperatorClass(new Variable((yyvsp[-3].str)), (yyvsp[-1].node_t),"OP");
 										}
-#line 1287 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1289 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 91 "code_parser.y" /* yacc.c:1646  */
+#line 93 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new DefinitionBlocksClass((yyvsp[0].node_t),"DEFINITION_BLOCKS");    }
-#line 1293 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1295 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 92 "code_parser.y" /* yacc.c:1646  */
+#line 94 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new DefinitionBlocksClass((yyvsp[-2].node_t),(yyvsp[0].node_t),"DEFINITION_BLOCKS"); }
-#line 1299 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1301 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 95 "code_parser.y" /* yacc.c:1646  */
+#line 97 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new DefinitionBlockWithBraceCode( NULL,
 																											NULL,
 																											"DEFINITION_BLOCK_WITH_END"
 																											);
 																}
-#line 1309 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1311 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 100 "code_parser.y" /* yacc.c:1646  */
+#line 102 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new DefinitionBlockWithBraceCode( (yyvsp[0].node_t),
 																											NULL,
 																											"DEFINITION_BLOCK_WITH_END"
 																											);
 																}
-#line 1319 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1321 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 105 "code_parser.y" /* yacc.c:1646  */
+#line 107 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new DefinitionBlockWithBraceCode( (yyvsp[-1].node_t),
 																											new BraceCode((yyvsp[0].str)),
 																											"DEFINITION_BLOCK_WITH_END"
 																											); 
 																}
-#line 1329 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1331 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 110 "code_parser.y" /* yacc.c:1646  */
+#line 112 "code_parser.y" /* yacc.c:1646  */
     { 
 																	(yyval.node_t) = new DefinitionBlockWithBraceCode( NULL,
 																											  new BraceCode((yyvsp[0].str)),
 																											  "DEFINITION_BLOCK_WITH_END"
 																											  );
 																}
-#line 1340 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1342 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 118 "code_parser.y" /* yacc.c:1646  */
+#line 120 "code_parser.y" /* yacc.c:1646  */
     { 
 												(yyval.node_t) = new DefinitionBlockClass((yyvsp[0].node_t),"DEFINITION_BLOCK"); 
 												}
-#line 1348 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1350 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 121 "code_parser.y" /* yacc.c:1646  */
+#line 123 "code_parser.y" /* yacc.c:1646  */
     { (yyval.node_t) = new DefinitionBlockClass((yyvsp[-1].node_t),(yyvsp[0].node_t),"DEFINITION_BLOCK");  }
-#line 1354 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1356 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 124 "code_parser.y" /* yacc.c:1646  */
+#line 126 "code_parser.y" /* yacc.c:1646  */
     { 
 						//printf("Var %s\n", $1.c_str()); 
 						(yyval.node_t) = new TokenClass(new Variable((yyvsp[0].str)), "TOKEN");
 					}
-#line 1363 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1365 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 128 "code_parser.y" /* yacc.c:1646  */
+#line 130 "code_parser.y" /* yacc.c:1646  */
     { 
 						//printf("Sym %s\n", $1.c_str());
 						(yyval.node_t) = new TokenClass(new Symbol((yyvsp[0].str)), "TOKEN");
 					}
-#line 1372 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1374 "code_parser.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1376 "code_parser.tab.c" /* yacc.c:1646  */
+#line 1378 "code_parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1600,7 +1602,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 133 "code_parser.y" /* yacc.c:1906  */
+#line 135 "code_parser.y" /* yacc.c:1906  */
 
 
 int main(int argc, char **argv){

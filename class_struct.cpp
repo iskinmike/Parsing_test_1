@@ -89,19 +89,17 @@ OperatorClass::OperatorClass(TokenTypeClass* variable,
                                OperatorTypeClass* definition_block,
                                std::string node_name)
     : definition_block_pointer(definition_block),
-      variable_pointer(variable),
-      _color(color_t::WHITE) {
+      variable_pointer(variable) {
   CREATE_NEW_NAME(_operator_class_number);
 };
 DefinitionBlockWithBraceCode::DefinitionBlockWithBraceCode(
     OperatorTypeClass* block, TokenTypeClass* brace_code, std::string node_name)
     : brace_code_pointer(brace_code),
-      block_pointer(block),
-      _color(color_t::WHITE) {
+      block_pointer(block) {
   CREATE_NEW_NAME(_definition_block_with_end_class_number);
 };
 TokenClass::TokenClass(TokenTypeClass* arg, std::string node_name)
-    : _token(arg), _color(color_t::WHITE) {
+    : _token(arg) {
   CREATE_NEW_NAME(_token_class_number);
 };
 

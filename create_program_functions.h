@@ -1,6 +1,5 @@
 /* create_program_functions.h */
-void generateProgramCode();
-void startFunctionTest();
+void generateProgramCode(std::string file_path);
 void generateProgramCodeFromNode(NodeStruct* _node);
 void generateProgramCodeFromRule(RuleStruct* _rule);
 void generateProgramCodeFromVariable(VariableStruct* _variable);

@@ -2,17 +2,9 @@
 
 std::string returnNewName(std::string str, int number);
 
-enum class color_t
-        {
-        	WHITE, 
-        	GREY,
-        	BLACK
-        };
-
 class OperatorTypeClass { // abstract
         protected: OperatorTypeClass() {}
         public: virtual ~OperatorTypeClass(){};
-    	public: int i;	
     	public: std::string _node_name; 	
     };
 
@@ -55,7 +47,6 @@ class Operators : public OperatorTypeClass{
         //void append(OperatorTypeClass* op);
         public:
         	int _node_number;
-        	color_t _color;
 
         	//std::string _node_name;
         	std::list<OperatorTypeClass*> ops;
@@ -70,7 +61,6 @@ class OperatorClass : public OperatorTypeClass
     {	
     public:
     	 int _node_number;
-    	color_t _color;
     	//std::string _node_name;
     	OperatorTypeClass* definition_block_pointer;
     	TokenTypeClass* variable_pointer;
@@ -84,7 +74,6 @@ class DefinitionBlocksClass : public OperatorTypeClass
     public:
     	 int _node_number;
     	std::list<OperatorTypeClass*> _definition_blocks;
-    	color_t _color;
     	OperatorTypeClass* pointer_to_def_blocks;
         OperatorTypeClass* pointer_to_def_block_with_brace_code;
     	//std::string _node_name;
@@ -100,7 +89,6 @@ class DefinitionBlockWithBraceCode : public OperatorTypeClass
 
 		OperatorTypeClass* block_pointer; // Ссылается на все перечисленные, кроме наверное Brace_code_token
 		TokenTypeClass* brace_code_pointer; // песть отдельно ссылается на код
-		color_t _color;
 		//std::string _node_name;
 		DefinitionBlockWithBraceCode(OperatorTypeClass* block, TokenTypeClass* Brace_code, std::string node_name);
 	};
@@ -112,7 +100,6 @@ class DefinitionBlockClass : public OperatorTypeClass
 	public:
 		 int _node_number;
 		std::list<OperatorTypeClass*> _definition_block;
-		color_t _color;
 		//std::string _node_name;
 		OperatorTypeClass* pointer_to_def_block;
         OperatorTypeClass* pointer_to_token;
@@ -123,7 +110,6 @@ class DefinitionBlockClass : public OperatorTypeClass
 
 class TokenClass : public OperatorTypeClass 
 	{
-		color_t _color;
 	public:
 		 int _node_number;
 		//std::string _node_name;

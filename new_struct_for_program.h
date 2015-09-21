@@ -9,8 +9,14 @@ struct NodeStruct
 	std::string _node_uniq_name; // Уникальное имя
 	std::string _lable_data;
 	std::vector<RuleStruct*> _rule;
-	void printLable(){
-		printf("%s [label=\"%s\"];\n", _node_uniq_name.c_str(), _name.c_str());
+	std::string printLable(){
+		std::string temp_str("");
+		temp_str.append(_node_uniq_name);
+		temp_str.append("[label=\"");
+		temp_str.append(_name);
+		temp_str.append("\"];\n");
+		return temp_str;
+		//printf("%s [label=\"%s\"];\n", _node_uniq_name.c_str(), _name.c_str());
 	};
 	NodeStruct(){};
 	NodeStruct(std::string name){ _name = name; };
@@ -33,8 +39,14 @@ struct  RuleStruct
 	std::vector<VariableStruct*> _variable;
 	RuleStruct(){};
 	RuleStruct(std::string name){ _name = name; };
-	void printLable(){
-		printf("%s [label=\"%s\" shape=box,color=aquamarine,style=filled ];\n", _rule_uniq_name.c_str(), _name.c_str());
+	std::string printLable(){
+		std::string temp_str("");
+		temp_str.append(_rule_uniq_name);
+		temp_str.append("[label=\"");
+		temp_str.append(_name);
+		temp_str.append("\" shape=box,color=aquamarine,style=filled ];\n");
+		return temp_str;
+		//printf("%s [label=\"%s\" shape=box,color=aquamarine,style=filled ];\n", _rule_uniq_name.c_str(), _name.c_str());
 	};
 };
 
@@ -56,7 +68,13 @@ struct VariableStruct
 			);
 		_name = _name.substr(0,_name.find("\""));
 	};
-	void printLable(){
+	std::string printLable(){
+		std::string temp_str("");
+		temp_str.append(_variable_uniq_name);
+		temp_str.append("[label=\"");
+		temp_str.append(_name);
+		temp_str.append("\" shape=polygon,sides=5,color=lightblue,style=filled ];\n");
+		return temp_str;
 		printf("%s [label=\"%s\" shape=polygon,sides=5,color=lightblue,style=filled ];\n", _variable_uniq_name.c_str(), _name.c_str());
 	};
 };

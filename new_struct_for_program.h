@@ -14,7 +14,8 @@ struct NodeStruct
 		temp_str.append(_node_uniq_name);
 		temp_str.append("[label=\"");
 		temp_str.append(_name);
-		temp_str.append("\"];\n");
+		//temp_str.append("\"];\n");
+		temp_str.append("\" shape=box,color=deeppink,style=filled ];\n");
 		return temp_str;
 		//printf("%s [label=\"%s\"];\n", _node_uniq_name.c_str(), _name.c_str());
 	};

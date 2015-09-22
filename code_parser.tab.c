@@ -1259,7 +1259,7 @@ yyreduce:
 															generateAdditionalConnectionsInNewStructure();
 															if (print_graph){
 																
-																printAllDataFromNewStruct(output_graph_file);
+																printAllDataFromNewStruct(output_graph_file, massive_of_tokens);
 																
 															}
 															if (print_program) {

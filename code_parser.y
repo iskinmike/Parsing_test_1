@@ -70,7 +70,7 @@ PROGRAM: TOKEN_SECTION_EMPTY_OR_NOT DOUBLE_PERCENT OPS  {
 															generateAdditionalConnectionsInNewStructure();
 															if (print_graph){
 																
-																printAllDataFromNewStruct(output_graph_file);
+																printAllDataFromNewStruct(output_graph_file, massive_of_tokens);
 																
 															}
 															if (print_program) {

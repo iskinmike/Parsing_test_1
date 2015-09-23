@@ -39,6 +39,16 @@ GlobalDataStorage& print_functions_data = GlobalDataStorage::Instance();
   global_string_with_graph.append("} }\" style=filled gradientangle=90 fillcolor=\"lightsteelblue1;0.5:green\"];\n");
 
 
+bool isItToken(VariableStruct* _variable, std::vector<std::string> *massive_of_tokens){
+	for (int i = 0; i < massive_of_tokens->size(); ++i)
+	{
+		if (_variable->_name.compare((*massive_of_tokens)[i]) == 0)
+		{
+			return true;
+		}
+	}
+	return false;
+};
 
 
 std::string returnIntToString(int number) {
@@ -118,6 +128,7 @@ void printRuleData(RuleStruct* _rule, std::vector<std::string> *massive_of_token
   }
 */
 
+
   global_string_with_graph.append(_rule->_rule_uniq_name.c_str());
   global_string_with_graph.append(";\n");
 
@@ -146,6 +157,54 @@ void printRuleData(RuleStruct* _rule, std::vector<std::string> *massive_of_token
   }
   global_string_with_graph.append("} \" style=filled gradientangle=90 fillcolor=\"cornsilk;0.5:aquamarine\"];\n");
 
+/*
+  global_string_with_graph.append(_rule->_rule_uniq_name.c_str());
+  global_string_with_graph.append(";\n");
+
+  global_string_with_graph.append(_rule->_rule_uniq_name.c_str());
+  global_string_with_graph.append("[label=<<table><tr><td bgcolor=\"#7FFFD4\" colspan=\"");
+  int temp_count_i = _rule->_variable.size(); // не нужна проверка - дот их игнорирует
+  global_string_with_graph.append(returnIntToString(temp_count_i));
+  global_string_with_graph.append("\">");
+  global_string_with_graph.append(_rule->_name.c_str());
+  global_string_with_graph.append("</td></tr>");
+
+  global_string_with_graph.append("<tr>");
+  for (int i = 0; i < temp_count_i; ++i)
+  {
+  	global_string_with_graph.append("<td  bgcolor=\"");	
+  	if (isItToken(_rule->_variable[i],massive_of_tokens)){
+	  global_string_with_graph.append("#7EC0EE");
+  	}
+  	else {
+	  global_string_with_graph.append("#FFF68F");
+  	}
+  	global_string_with_graph.append("\">");
+  	std::string temp_str(_rule->_variable[i]->_name);
+  	if (temp_str.find("'") != std::string::npos){
+  	  	temp_str = temp_str.substr(temp_str.find("'")+1);
+  		temp_str = temp_str.substr(0,temp_str.find("'"));
+  		//global_string_with_graph.append("\\");
+  		if (temp_str.compare("<") == 0){
+  			temp_str.assign("&lt");
+  		}
+  		if (temp_str.compare(">") == 0){
+  			temp_str.assign("&gt");
+  		}
+  		if (temp_str.compare("{") == 0 || 
+  			temp_str.compare("}") == 0
+  		){
+  			global_string_with_graph.append("\\");
+  		}
+  	}
+  	global_string_with_graph.append(temp_str);
+  	global_string_with_graph.append("</td>");
+  }
+  if (temp_count_i == 0) {
+  	global_string_with_graph.append("<td bgcolor=\"#7FFFD4\"> </td>");
+  }
+  global_string_with_graph.append("</tr></table>>]\n");
+*/
 
 /*
   for (int i=0; i< _rule->_variable.size(); i++){

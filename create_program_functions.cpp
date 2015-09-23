@@ -15,6 +15,37 @@
 #include "generation_control.h"
 
 
+
+// Здесь начнем динамически подключать нашу библиотеку
+// чтобы получить функцию sendRequestToDll();
+// 
+
+#include <dlfcn.h>
+
+void *ext_library;	// хандлер внешней библиотеки
+char *error;
+AnswerNodeInformation* (*sendRequestToController)(RequestNodeInformation*); // переменная для хранения адреса функции
+
+
+void connectWithDll(){
+	//загрузка библиотеки
+	ext_library = dlopen("./token_generator/libtoken_generator.so",RTLD_LAZY);
+	if (!ext_library){
+		//если ошибка, то вывести ее на экран
+		fprintf(stderr,"dlopen() error: %s\n", dlerror());
+		return;
+	};
+	//загружаем из библиотеки требуемую процедуру	
+	sendRequestToController = (AnswerNodeInformation* (*)(RequestNodeInformation*)) dlsym(ext_library, "sendRequestToDll");
+	if ((error = dlerror()) != NULL)  {
+        fprintf (stderr, "%s\n", error);
+        return;
+    }
+}
+void closeConnectionWithDll(){
+	dlclose(ext_library);
+}
+
 ////////////////////////////////////////////////
 void startFunctionTest(){
 	printf("%s\n","test");
@@ -60,7 +91,7 @@ void printProgramCodeFromNode(NodeStruct* _node){
 	_request._name.assign(_node->_name);
 
 	AnswerNodeInformation* _answer;
-	_answer = sendRequestToDll(&_request);
+	_answer = (*sendRequestToController)(&_request); //sendRequestToDll(&_request);
 // Проверяем узел с замыканием или нет можно и внутри ДЛЛ проверять
 	if (_answer->is_closure_operator)
 	{// Зашли в узел, создали структуру с именем
@@ -103,7 +134,7 @@ void printProgramCodeFromVariable(VariableStruct* _variable){
 		_request._name.assign(_variable->_name);
 
 		AnswerNodeInformation* _answer;
-		_answer = sendRequestToDll(&_request);
+		_answer = (*sendRequestToController)(&_request); // sendRequestToDll(&_request);
 
 		std::string temp_str = _answer->_name;
 		if (temp_str.compare("") == 0) {
@@ -143,8 +174,11 @@ void generateProgramCode(std::string file_path){
 	// которая генерирует нам карту или вектор из объектов SettingsStruct
 	//generateSettingsStruct();
 
-	printProgramCodeFromNode(generate_functions_data.node_struct_vector[0]);
+	connectWithDll();
 
+	printProgramCodeFromNode(generate_functions_data.node_struct_vector[0]);
+	
+	closeConnectionWithDll();
 	clearAllDynamicData();
 
 	if (file_path.compare("")==0){

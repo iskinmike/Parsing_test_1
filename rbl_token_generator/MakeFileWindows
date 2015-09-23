@@ -5,10 +5,9 @@ CXX=g++
 
 RM = rm
 MKDIR = mkdir
-FILENAME_PREFIX = lib
 
 # Constants
-FLAGS_MUTUAL = -Wall -m32 -fPIC -std=c++11 -MMD -MP -MF "${OBJECTDIR}/$@.d"
+FLAGS_MUTUAL = -Wall -m32 -std=c++11 -MMD -MP -MF "${OBJECTDIR}/$@.d"
 
 .PHONY: debug
 
@@ -32,14 +31,7 @@ token_generator.o: token_generator.cpp
 	${RM} -f "${OBJECTDIR}/$@.d"
 	$(COMPILE.cc) $(FLAGS) -o ${OBJECTDIR}/token_generator.o token_generator.cpp
 
-generation_control.o: generation_control.cpp
+module: token_generator.o
 	@echo "-------------------------" 
 	${MKDIR} -p ${OBJECTDIR}
-	${RM} -f "${OBJECTDIR}/$@.d"
-	$(COMPILE.cc) $(FLAGS) -o ${OBJECTDIR}/generation_control.o generation_control.cpp
-
-module: token_generator.o generation_control.o
-	@echo "-------------------------" 
-	${MKDIR} -p ${OBJECTDIR}
-	${LINK.cc} -m32 -shared ${OBJECTDIR}/token_generator.o ${OBJECTDIR}/generation_control.o -o ${OBJECTDIR}/../../$(FILENAME_PREFIX)token_generator_$(FILENAME_FIX).so
-	cp $(FILENAME_PREFIX)token_generator_$(FILENAME_FIX).so ../token_generator/$(FILENAME_PREFIX)token_generator.so
+	${LINK.cc} -m32 -shared ${OBJECTDIR}/token_generator.o -o ${OBJECTDIR}/token_generator_$(FILENAME_FIX).dll

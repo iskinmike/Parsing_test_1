@@ -24,19 +24,61 @@ flex &amp; bison parsing test, currently work on three struct
   Динамическая библиотека libtoken_generator должна отвечать за создание токенов(зарезервированных слов), переменных, строк и чисел. А так же управлять количеством вызываемых операторов языка при создании тестов.
 
 
-
-###Ядро генератора экспортирует из нее функцию:
+######Взаимодействие с библиотекой libtoken_generator:
+Ядро генератора при создании тестов экспортирует из libtoken_generator функцию:
 AnswerNodeInformation* _request sendRequest(RequestNodeInformation* _request).
   Функция принимет структуку RequestNodeInformation содержащую имя оператора или токена.
+```
 struct RequestNodeInformation{
 	std::string _name;
 };
+```
   а возвращает структуру AnswerNodeInformation содержащую информацию о том можно ли вызывать данный оператор, сгенерированный токен, число, строку и дополнительную информацию.
+```
 struct AnswerNodeInformation{
 	bool is_stop;
 	bool is_closure_operator;
 	int count;
 	std::string _name;
 }; 
+```
 
+Примеры использования
+ - команда построения графа из файла test.txt.
+```test.txt
+%%
+a: b
+ | c;
+c: var_1;
+b: var_2
+ | var_3;
+```
 
+```bash
+ $ parser --input test.txt --graph 
+``` 
+Выведет на экран описание графа на языке dot:
+```
+digraph G {
+	size ="40,40";
+	node [shape = record,height=.1];
+	splines=line;
+	splines=true;
+	rankdir = "LR";
+	OP_1 -> DEFINITION_BLOCK_WITH_END_2;
+	DEFINITION_BLOCK_WITH_END_2[label="Rule__1|{<var_0>var_1} " style=filled gradientangle=90 fillcolor="cornsilk;0.5:aquamarine"];
+	OP_0 -> DEFINITION_BLOCK_WITH_END_0;
+	DEFINITION_BLOCK_WITH_END_0[label="Rule__1|{<var_0>b} " style=filled gradientangle=90 fillcolor="cornsilk;0.5:aquamarine"];
+	OP_0 -> DEFINITION_BLOCK_WITH_END_1;
+	DEFINITION_BLOCK_WITH_END_1[label="Rule__2|{<var_0>c} " style=filled gradientangle=90 fillcolor="cornsilk;0.5:aquamarine"];
+	OP_2 -> DEFINITION_BLOCK_WITH_END_3;
+	DEFINITION_BLOCK_WITH_END_3[label="Rule__1|{<var_0>var2} " style=filled gradientangle=90 fillcolor="cornsilk;0.5:aquamarine"];
+	OP_2 -> DEFINITION_BLOCK_WITH_END_4;
+	DEFINITION_BLOCK_WITH_END_4[label="Rule__2|{<var_0>var_3} " style=filled gradientangle=90 fillcolor="cornsilk;0.5:aquamarine"];
+	"DEFINITION_BLOCK_WITH_END_0":var_0 -> OP_2;
+	"DEFINITION_BLOCK_WITH_END_1":var_0 -> OP_1;
+	OP_1[label="c" shape=box,color=deeppink,style=filled ];
+	OP_0[label="a" shape=box,color=deeppink,style=filled ];
+	OP_2[label="b" shape=box,color=deeppink,style=filled ];
+}
+```
